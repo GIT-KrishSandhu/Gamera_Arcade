@@ -1,0 +1,272 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile - Gamera Arcade{% endblock %}
+
+{% block content %}
+<div class="profile-page">
+    <div class="profile-header">
+        <div class="profile-info">
+            <div class="profile-avatar">
+                <i class="fas fa-user-circle"></i>
+            </div>
+            <div class="profile-details">
+                <h1 class="profile-name">{{ user.username }}</h1>
+                <p class="profile-email">{{ user.email }}</p>
+                <p class="profile-joined">
+                    <i class="fas fa-calendar"></i>
+                    Joined {{ user.created_at.strftime('%B %Y') }}
+                </p>
+            </div>
+        </div>
+        
+        <div class="profile-stats">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ user.tokens }}</span>
+                    <span class="stat-label">Tokens</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ scores|length }}</span>
+                    <span class="stat-label">Games Played</span>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-number">{{ scores|selectattr('score', 'gt', 1000)|list|length }}</span>
+                    <span class="stat-label">High Scores</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <!-- Web3 Wallet Section -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-wallet"></i>
+                    Web3 Wallet
+                </h2>
+            </div>
+            
+            <div class="wallet-info">
+                {% if user.wallet_address %}
+                    <div class="wallet-connected">
+                        <div class="wallet-status">
+                            <i class="fas fa-check-circle connected"></i>
+                            <span>Wallet Connected</span>
+                        </div>
+                        <div class="wallet-address">
+                            <code>{{ user.wallet_address[:6] }}...{{ user.wallet_address[-4:] }}</code>
+                            <button class="copy-btn" onclick="copyToClipboard('{{ user.wallet_address }}')">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                        <div class="wallet-actions">
+                            <button class="wallet-btn" onclick="viewOnExplorer('{{ user.wallet_address }}')">
+                                <i class="fas fa-external-link-alt"></i>
+                                View on Explorer
+                            </button>
+                            <button class="wallet-btn secondary" onclick="disconnectWallet()">
+                                <i class="fas fa-unlink"></i>
+                                Disconnect
+                            </button>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="wallet-disconnected">
+                        <div class="wallet-placeholder">
+                            <i class="fas fa-wallet"></i>
+                            <h3>Connect Your Wallet</h3>
+                            <p>Connect your Web3 wallet to start earning and managing tokens.</p>
+                            <button class="wallet-btn primary" onclick="connectWallet()">
+                                <i class="fas fa-link"></i>
+                                Connect Wallet
+                            </button>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Game Scores Section -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line"></i>
+                    Game Statistics
+                </h2>
+                <div class="section-filters">
+                    <select id="gameFilter" onchange="filterScores()">
+                        <option value="all">All Games</option>
+                        <option value="fruit_ninja">Fruit Ninja</option>
+                        <option value="trex_run">T-Rex Run</option>
+                        <option value="rock_paper_scissors">Rock Paper Scissors</option>
+                        <option value="breakout">Breakout</option>
+                        <option value="space_invaders">Space Invaders</option>
+                    </select>
+                </div>
+            </div>
+            
+            {% if scores %}
+                <div class="scores-grid">
+                    {% for score in scores %}
+                        <div class="score-card" data-game="{{ score.game_name }}">
+                            <div class="score-header">
+                                <div class="game-icon">
+                                    {% if score.game_name == 'fruit_ninja' %}
+                                        <i class="fas fa-apple-alt"></i>
+                                    {% elif score.game_name == 'trex_run' %}
+                                        <i class="fas fa-running"></i>
+                                    {% elif score.game_name == 'rock_paper_scissors' %}
+                                        <i class="fas fa-hand-rock"></i>
+                                    {% elif score.game_name == 'breakout' %}
+                                        <i class="fas fa-square"></i>
+                                    {% else %}
+                                        <i class="fas fa-gamepad"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="score-info">
+                                    <h3 class="game-name">{{ score.game_name.replace('_', ' ').title() }}</h3>
+                                    <p class="score-date">{{ score.created_at.strftime('%b %d, %Y') }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="score-details">
+                                <div class="score-value">
+                                    <span class="score-number">{{ score.score }}</span>
+                                    <span class="score-label">Points</span>
+                                </div>
+                                <div class="tokens-earned">
+                                    <i class="fas fa-coins"></i>
+                                    <span>{{ score.tokens_earned }} tokens</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-scores">
+                    <i class="fas fa-gamepad"></i>
+                    <h3>No Games Played Yet</h3>
+                    <p>Start playing games to see your scores and statistics here!</p>
+                    <a href="{{ url_for('index') }}" class="cta-btn primary">
+                        <i class="fas fa-play"></i>
+                        Play Games
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Achievements Section (Placeholder for Web3 NFTs) -->
+        <div class="profile-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-medal"></i>
+                    Achievements & NFTs
+                </h2>
+            </div>
+            
+            <div class="achievements-grid">
+                <!-- TODO: Web3 Integration - Display user's NFT achievements -->
+                <div class="achievement-placeholder">
+                    <i class="fas fa-trophy"></i>
+                    <h3>NFT Achievements Coming Soon!</h3>
+                    <p>Earn unique NFT collectibles based on your gaming performance.</p>
+                    <div class="achievement-examples">
+                        <div class="achievement-item">
+                            <i class="fas fa-fire"></i>
+                            <span>Score Streak NFT</span>
+                        </div>
+                        <div class="achievement-item">
+                            <i class="fas fa-crown"></i>
+                            <span>Leaderboard Champion</span>
+                        </div>
+                        <div class="achievement-item">
+                            <i class="fas fa-gem"></i>
+                            <span>Rare Game Master</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function filterScores() {
+    const filter = document.getElementById('gameFilter').value;
+    const scoreCards = document.querySelectorAll('.score-card');
+    
+    scoreCards.forEach(card => {
+        const gameType = card.getAttribute('data-game');
+        if (filter === 'all' || gameType === filter) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
+    });
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success message
+        showNotification('Wallet address copied to clipboard!', 'success');
+    });
+}
+
+function viewOnExplorer(address) {
+    // TODO: Web3 Integration - Open blockchain explorer
+    const explorerUrl = `https://etherscan.io/address/${address}`;
+    window.open(explorerUrl, '_blank');
+}
+
+async function disconnectWallet() {
+    try {
+        const response = await fetch('/api/connect_wallet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                wallet_address: null
+            })
+        });
+        
+        if (response.ok) {
+            location.reload();
+        }
+    } catch (error) {
+        console.error('Error disconnecting wallet:', error);
+    }
+}
+
+function showNotification(message, type) {
+    // Create and show notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+</script>
+{% endblock %}

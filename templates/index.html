@@ -1,0 +1,220 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">
+                Welcome to <span class="gradient-text">Gamera Arcade</span>
+            </h1>
+            <p class="hero-subtitle">
+                Experience the future of gaming with gesture-controlled adventures powered by AI and computer vision.
+            </p>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <span class="stat-number">5</span>
+                    <span class="stat-label">Epic Games</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">∞</span>
+                    <span class="stat-label">Possibilities</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">Web3</span>
+                    <span class="stat-label">Rewards</span>
+                </div>
+            </div>
+            {% if not session.user_id %}
+                <div class="hero-cta">
+                    <a href="{{ url_for('auth') }}" class="cta-btn primary">
+                        <i class="fas fa-rocket"></i>
+                        Start Gaming
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+        <div class="hero-visual">
+            <div class="floating-elements">
+                <div class="floating-icon" style="--delay: 0s;">🎮</div>
+                <div class="floating-icon" style="--delay: 1s;">🤚</div>
+                <div class="floating-icon" style="--delay: 2s;">🎯</div>
+                <div class="floating-icon" style="--delay: 3s;">🏆</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Games Section -->
+<section class="games-section" id="games">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Games</h2>
+            <p class="section-subtitle">
+                Master these gesture-controlled challenges and earn tokens!
+            </p>
+        </div>
+        
+        <div class="games-grid">
+            {% for game_id, game in games.items() %}
+                <div class="game-card {{ 'coming-soon' if game.status == 'coming_soon' else '' }}" 
+                     onclick="{% if game.status == 'active' %}window.location.href='{{ url_for('game', game_id=game_id) }}'{% endif %}">
+                    <div class="game-thumbnail">
+                        <img src="{{ game.thumbnail }}" alt="{{ game.name }}" class="game-image">
+                        {% if game.status == 'coming_soon' %}
+                            <div class="coming-soon-overlay">
+                                <span class="coming-soon-text">Coming Soon</span>
+                            </div>
+                        {% endif %}
+                        <div class="game-overlay">
+                            <div class="play-button">
+                                <i class="fas fa-play"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="game-info">
+                        <h3 class="game-title">{{ game.name }}</h3>
+                        <p class="game-description">{{ game.description }}</p>
+                        
+                        <div class="game-meta">
+                            <div class="game-status">
+                                {% if game.status == 'active' %}
+                                    <span class="status-badge active">
+                                        <i class="fas fa-circle"></i> Live
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge coming-soon">
+                                        <i class="fas fa-clock"></i> Soon
+                                    </span>
+                                {% endif %}
+                            </div>
+                            
+                            {% if game.status == 'active' %}
+                                <div class="game-difficulty">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">Why Gamera Arcade?</h2>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-hand-paper"></i>
+                </div>
+                <h3 class="feature-title">Gesture Control</h3>
+                <p class="feature-description">
+                    Play games using natural hand movements detected by advanced AI computer vision.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 class="feature-title">Web3 Rewards</h3>
+                <p class="feature-description">
+                    Earn tokens and collectible NFTs based on your gaming performance and streaks.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-trophy"></i>
+                </div>
+                <h3 class="feature-title">Leaderboards</h3>
+                <p class="feature-description">
+                    Compete with players worldwide and climb the ranks in each game category.
+                </p>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3 class="feature-title">Cross-Platform</h3>
+                <p class="feature-description">
+                    Play seamlessly across devices with responsive design and cloud save sync.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Web3 Integration Info -->
+<section class="web3-section">
+    <div class="section-container">
+        <div class="web3-content">
+            <div class="web3-info">
+                <h2 class="section-title">Web3 Gaming Revolution</h2>
+                <p class="section-subtitle">
+                    Connect your wallet and start earning real rewards for your gaming skills.
+                </p>
+                <ul class="web3-features">
+                    <li><i class="fas fa-check"></i> Earn tokens for high scores</li>
+                    <li><i class="fas fa-check"></i> Collect unique NFT achievements</li>
+                    <li><i class="fas fa-check"></i> Trade rewards on decentralized markets</li>
+                    <li><i class="fas fa-check"></i> Participate in community governance</li>
+                </ul>
+                {% if session.user_id %}
+                    <button class="cta-btn secondary" onclick="connectWallet()">
+                        <i class="fas fa-wallet"></i>
+                        Connect Wallet
+                    </button>
+                {% endif %}
+            </div>
+            <div class="web3-visual">
+                <div class="token-animation">
+                    <div class="token-coin">🪙</div>
+                    <div class="token-coin">🎖️</div>
+                    <div class="token-coin">💎</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Add any homepage-specific JavaScript here
+document.addEventListener('DOMContentLoaded', function() {
+    // Animate floating elements
+    const floatingElements = document.querySelectorAll('.floating-icon');
+    floatingElements.forEach((element, index) => {
+        element.style.animationDelay = `${index * 0.5}s`;
+    });
+    
+    // Add hover effects to game cards
+    const gameCards = document.querySelectorAll('.game-card');
+    gameCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('coming-soon')) {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

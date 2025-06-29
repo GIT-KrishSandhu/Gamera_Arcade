@@ -1,0 +1,5 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Werkzeug==2.3.7
+opencv-python==4.8.1.78
+mediapipe==0.10.7

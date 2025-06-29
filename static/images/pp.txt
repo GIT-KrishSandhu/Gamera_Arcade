@@ -1,0 +1,21 @@
+# Game Thumbnail Placeholders
+
+This folder should contain the following game thumbnail images:
+
+1. fruit_ninja_thumb.jpg - Fruit Ninja game thumbnail (320x200px recommended)
+2. trex_thumb.jpg - T-Rex Run game thumbnail (320x200px recommended)  
+3. rps_thumb.jpg - Rock Paper Scissors game thumbnail (320x200px recommended)
+4. breakout_thumb.jpg - Breakout game thumbnail (320x200px recommended)
+5. space_thumb.jpg - Space Invaders game thumbnail (320x200px recommended)
+6. metamask-icon.png - MetaMask wallet icon (24x24px recommended)
+
+For now, these images will show as broken links until you add actual thumbnails.
+You can create simple placeholder images or use actual game screenshots.
+
+Recommended image specifications:
+- Format: JPG or PNG
+- Size: 320x200px for game thumbnails
+- Style: Colorful, engaging, representative of the game
+- Background: Should match the site's color scheme when possible
+
+The images should be visually appealing and give users a clear idea of what each game offers.
