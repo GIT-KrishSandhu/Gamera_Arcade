@@ -1,9 +1,13 @@
-from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for, flash, Response
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
 import json
+import cv2
+import base64
+import numpy as np
+from games import game_manager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
@@ -159,7 +163,105 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('index'))
 
-# API Routes for Game Integration
+# Game API Routes
+@app.route('/api/game/start/<game_id>', methods=['POST'])
+def start_game_api(game_id):
+    """Start a game"""
+    try:
+        print(f"🎮 API: Starting game {game_id}")
+        result = game_manager.start_game(game_id)
+        print(f"🎮 API: Game start result: {result}")
+        return jsonify(result)
+    except Exception as e:
+        print(f"❌ API: Error starting game: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/game/stop', methods=['POST'])
+def stop_game_api():
+    """Stop current game"""
+    try:
+        print(f"🛑 API: Stopping current game")
+        result = game_manager.stop_current_game()
+        print(f"🛑 API: Game stop result: {result}")
+        return jsonify(result)
+    except Exception as e:
+        print(f"❌ API: Error stopping game: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/game/state')
+def get_game_state():
+    """Get current game state"""
+    try:
+        state = game_manager.get_current_game_state()
+        return jsonify(state)
+    except Exception as e:
+        print(f"❌ API: Error getting game state: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/game/video_feed')
+def video_feed():
+    """Video streaming route - FIXED"""
+    def generate():
+        print("📹 Starting video feed generator...")
+        frame_count = 0
+        
+        try:
+            while True:
+                try:
+                    frame_base64 = game_manager.get_current_frame()
+                    if frame_base64:
+                        # Decode base64 and send as MJPEG stream
+                        frame_bytes = base64.b64decode(frame_base64)
+                        yield (b'--frame\r\n'
+                               b'Content-Type: image/jpeg\r\n\r\n' + 
+                               frame_bytes + b'\r\n')
+                        
+                        frame_count += 1
+                        if frame_count % 60 == 0:  # Log every 60 frames (less frequent)
+                            print(f"📹 Video feed active - {frame_count} frames sent")
+                    else:
+                        # Send empty frame if no game is running
+                        empty_frame = create_empty_frame()
+                        _, buffer = cv2.imencode('.jpg', empty_frame)
+                        yield (b'--frame\r\n'
+                               b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+                    
+                    # Small delay to prevent overwhelming
+                    import time
+                    time.sleep(0.033)  # ~30 FPS
+                    
+                except GeneratorExit:
+                    print("📹 Video feed client disconnected")
+                    break
+                except Exception as e:
+                    print(f"❌ Video feed frame error: {e}")
+                    # Continue trying instead of breaking
+                    import time
+                    time.sleep(0.1)
+                    
+        except Exception as e:
+            print(f"❌ Video feed generator error: {e}")
+        finally:
+            print("📹 Video feed generator ended")
+    
+    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+
+@app.route('/api/game/score')
+def get_current_score():
+    """Get current game score"""
+    try:
+        state = game_manager.get_current_game_state()
+        return jsonify({'score': state.get('score', 0)})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+def create_empty_frame():
+    """Create an empty frame when no game is running"""
+    frame = np.zeros((480, 640, 3), dtype=np.uint8)
+    cv2.putText(frame, "No game running", (200, 240), 
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+    return frame
+
 @app.route('/api/submit_score', methods=['POST'])
 def submit_score():
     if 'user_id' not in session:
@@ -190,9 +292,6 @@ def submit_score():
     
     db.session.commit()
     
-    # TODO: Web3 Integration - Mint tokens to user's wallet
-    # mint_tokens_to_wallet(user.wallet_address, tokens_earned)
-    
     return jsonify({
         'success': True,
         'tokens_earned': tokens_earned,
@@ -214,14 +313,10 @@ def connect_wallet():
     user.wallet_address = wallet_address
     db.session.commit()
     
-    # TODO: Web3 Integration - Verify wallet ownership
-    # verify_wallet_ownership(wallet_address)
-    
     return jsonify({'success': True})
 
 def calculate_tokens(game_name, score):
     """Calculate tokens earned based on game and score"""
-    # TODO: Implement sophisticated token economics
     base_tokens = {
         'fruit_ninja': 10,
         'trex_run': 15,
@@ -237,8 +332,14 @@ def calculate_tokens(game_name, score):
 def create_tables():
     with app.app_context():
         db.create_all()
+        print("📊 Database tables created successfully")
 
 if __name__ == '__main__':
     # Create tables before running the app
     create_tables()
-    app.run(debug=True)
+    print("🎮 Gamera Arcade Server Starting...")
+    print("🍎 Fruit Ninja with OpenCV/MediaPipe integration ready!")
+    print("📹 Video streaming enabled")
+    
+    # FIXED: Disable reloader to prevent duplicate initialization
+    app.run(debug=True, threaded=True, use_reloader=False, host='127.0.0.1', port=5000)

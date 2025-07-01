@@ -4,328 +4,301 @@
 
 {% block content %}
 <div class="game-page">
-    <!-- Game Header -->
-    <div class="game-header">
-        <div class="game-header-content">
-            <div class="game-info">
-                <h1 class="game-title">{{ game_config.name }}</h1>
-                <p class="game-description">{{ game_config.description }}</p>
-                <div class="game-stats">
-                    <div class="stat-item">
-                        <span class="stat-label">Your Best:</span>
-                        <span class="stat-value" id="personalBest">Loading...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-label">Tokens Earned:</span>
-                        <span class="stat-value" id="tokensEarned">0</span>
-                    </div>
-                </div>
-            </div>
-            <div class="game-controls">
-                {% if game_config.status == 'active' %}
-                    <button class="game-btn primary" id="startGameBtn" onclick="startGame()">
-                        <i class="fas fa-play"></i>
-                        Start Game
-                    </button>
-                    <button class="game-btn secondary" id="stopGameBtn" onclick="stopGame()" style="display: none;">
-                        <i class="fas fa-stop"></i>
-                        Stop Game
-                    </button>
-                {% else %}
-                    <button class="game-btn disabled" disabled>
-                        <i class="fas fa-clock"></i>
-                        Coming Soon
-                    </button>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+  <div class="game-header">
+      <div class="game-header-content">
+          <div class="game-info" style="background-color:rgb(69, 81, 81);">
+              <h1 class="game-title">{{ game_config.name }}</h1>
+              <p class="game-description">{{ game_config.description }}</p>
+              <div class="game-stats">
+                  <div class="stat-item">
+                      <span class="stat-label">Your Best:</span>
+                      <span class="stat-value" id="personalBest">Loading...</span>
+                  </div>
+                  <div class="stat-item">
+                      <span class="stat-label">Tokens Earned:</span>
+                      <span class="stat-value" id="tokensEarned">0</span>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
 
-    <div class="game-content">
-        <!-- Game Canvas Area -->
-        <div class="game-canvas-section">
-            <div class="canvas-container">
-                {% if game_config.status == 'active' %}
-                    <video id="gameVideo" class="game-video" autoplay muted></video>
-                    <canvas id="gameCanvas" class="game-canvas"></canvas>
-                    <div class="game-overlay-ui">
-                        <div class="score-display">
-                            <span class="score-label">Score:</span>
-                            <span class="score-value" id="currentScore">0</span>
-                        </div>
-                        <div class="game-status" id="gameStatus">
-                            Ready to play!
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="coming-soon-placeholder">
-                        <i class="fas fa-gamepad placeholder-icon"></i>
-                        <h3>{{ game_config.name }}</h3>
-                        <p>This amazing game is coming soon!</p>
-                        <div class="placeholder-features">
-                            <div class="feature-item">
-                                <i class="fas fa-hand-paper"></i>
-                                <span>Gesture Controls</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="fas fa-trophy"></i>
-                                <span>Leaderboards</span>
-                            </div>
-                            <div class="feature-item">
-                                <i class="fas fa-coins"></i>
-                                <span>Token Rewards</span>
-                            </div>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-            
-            <!-- Game Instructions -->
-            <div class="game-instructions">
-                <h3>How to Play</h3>
-                {% if game_id == 'fruit_ninja' %}
-                    <ul>
-                        <li><i class="fas fa-hand-paper"></i> Show your hand to the camera</li>
-                        <li><i class="fas fa-arrows-alt"></i> Make quick swipe gestures to slice fruits</li>
-                        <li><i class="fas fa-target"></i> Avoid missing fruits - they'll fall!</li>
-                        <li><i class="fas fa-coins"></i> Higher scores earn more tokens</li>
-                    </ul>
-                {% elif game_id == 'trex_run' %}
-                    <ul>
-                        <li><i class="fas fa-hand-paper"></i> Raise your hand up to jump</li>
-                        <li><i class="fas fa-running"></i> Avoid obstacles by timing your jumps</li>
-                        <li><i class="fas fa-tachometer-alt"></i> Game speed increases over time</li>
-                        <li><i class="fas fa-coins"></i> Longer runs earn more tokens</li>
-                    </ul>
-                {% else %}
-                    <ul>
-                        <li><i class="fas fa-hand-paper"></i> Use hand gestures to control the game</li>
-                        <li><i class="fas fa-eye"></i> Make sure you're in good lighting</li>
-                        <li><i class="fas fa-trophy"></i> Compete for high scores</li>
-                        <li><i class="fas fa-coins"></i> Earn tokens based on performance</li>
-                    </ul>
-                {% endif %}
-            </div>
-        </div>
+  <div class="game-content">
+      <!-- Game Canvas Area -->
+      <div class="game-canvas-section">
+          <div class="canvas-container">
+              {% if game_config.status == 'active' %}
+                  <!-- Python OpenCV Video Stream -->
+                  <img id="gameVideo" class="game-video" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                  <div class="game-overlay-ui">
+                      <div class="score-display">
+                          <span class="score-label">Score:</span>
+                          <span class="score-value" id="currentScore">0</span>
+                      </div>
+                      <div class="game-status" id="gameStatus">
+                          Ready to play!
+                      </div>
+                  </div>
+              {% else %}
+                  <div class="coming-soon-placeholder">
+                      <i class="fas fa-gamepad placeholder-icon"></i>
+                      <h3>{{ game_config.name }}</h3>
+                      <p>This amazing game is coming soon!</p>
+                      <div class="placeholder-features">
+                          <div class="feature-item">
+                              <i class="fas fa-hand-paper"></i>
+                              <span>Gesture Controls</span>
+                          </div>
+                          <div class="feature-item">
+                              <i class="fas fa-trophy"></i>
+                              <span>Leaderboards</span>
+                          </div>
+                          <div class="feature-item">
+                              <i class="fas fa-coins"></i>
+                              <span>Token Rewards</span>
+                          </div>
+                      </div>
+                  </div>
+              {% endif %}
+          </div>
+          
+          <!-- MOVED GAME CONTROLS BELOW CAMERA -->
+          {% if game_config.status == 'active' %}
+              <div class="game-controls-bottom">
+                  <button class="game-btn primary" id="startGameBtn" onclick="startGame()">
+                      <i class="fas fa-play"></i>
+                      Start Game
+                  </button>
+                  <button class="game-btn secondary" id="stopGameBtn" onclick="stopGame()" style="display: none;">
+                      <i class="fas fa-stop"></i>
+                      Stop Game
+                  </button>
+              </div>
+          {% else %}
+              <div class="game-controls-bottom">
+                  <button class="game-btn disabled" disabled>
+                      <i class="fas fa-clock"></i>
+                      Coming Soon
+                  </button>
+              </div>
+          {% endif %}
+          
+          <!-- Game Instructions -->
+          <div class="game-instructions">
+              <h3>How to Play</h3>
+              {% if game_id == 'fruit_ninja' %}
+                  <ul>
+                      <li><i class="fas fa-hand-paper"></i> Show your hand to the camera</li>
+                      <li><i class="fas fa-arrows-alt"></i> Make quick swipe gestures to slice fruits</li>
+                      <li><i class="fas fa-target"></i> Don't let fruits fall - you'll lose lives!</li>
+                      <li><i class="fas fa-coins"></i> Higher scores earn more tokens</li>
+                      <li><i class="fas fa-lightbulb"></i> Make sure you have good lighting for hand detection</li>
+                  </ul>
+              {% elif game_id == 'trex_run' %}
+                  <ul>
+                      <li><i class="fas fa-hand-paper"></i> Raise your hand up to jump</li>
+                      <li><i class="fas fa-running"></i> Avoid obstacles by timing your jumps</li>
+                      <li><i class="fas fa-tachometer-alt"></i> Game speed increases over time</li>
+                      <li><i class="fas fa-coins"></i> Longer runs earn more tokens</li>
+                  </ul>
+              {% else %}
+                  <ul>
+                      <li><i class="fas fa-hand-paper"></i> Use hand gestures to control the game</li>
+                      <li><i class="fas fa-eye"></i> Make sure you're in good lighting</li>
+                      <li><i class="fas fa-trophy"></i> Compete for high scores</li>
+                      <li><i class="fas fa-coins"></i> Earn tokens based on performance</li>
+                  </ul>
+              {% endif %}
+          </div>
+      </div>
 
-        <!-- Leaderboard Section -->
-        <div class="leaderboard-section">
-            <div class="leaderboard-header">
-                <h3 class="leaderboard-title">
-                    <i class="fas fa-trophy"></i>
-                    Leaderboard
-                </h3>
-                <div class="leaderboard-filter">
-                    <select id="leaderboardFilter" onchange="filterLeaderboard()">
-                        <option value="all">All Time</option>
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="leaderboard-list">
-                {% if leaderboard %}
-                    {% for score, username in leaderboard %}
-                        <div class="leaderboard-item {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
-                            <div class="rank">
-                                {% if loop.index == 1 %}
-                                    <i class="fas fa-crown gold"></i>
-                                {% elif loop.index == 2 %}
-                                    <i class="fas fa-medal silver"></i>
-                                {% elif loop.index == 3 %}
-                                    <i class="fas fa-medal bronze"></i>
-                                {% else %}
-                                    <span class="rank-number">{{ loop.index }}</span>
-                                {% endif %}
-                            </div>
-                            <div class="player-info">
-                                <span class="player-name">{{ username }}</span>
-                                <span class="player-score">{{ score.score }}</span>
-                            </div>
-                            <div class="score-tokens">
-                                <i class="fas fa-coins"></i>
-                                {{ score.tokens_earned }}
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="empty-leaderboard">
-                        <i class="fas fa-trophy"></i>
-                        <p>No scores yet. Be the first to play!</p>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-    </div>
+      <!-- Leaderboard Section -->
+      <div class="leaderboard-section">
+          <div class="leaderboard-header">
+              <h3 class="leaderboard-title">
+                  <i class="fas fa-trophy"></i>
+                  Leaderboard
+              </h3>
+              <div class="leaderboard-filter">
+                  <select id="leaderboardFilter" onchange="filterLeaderboard()">
+                      <option value="all">All Time</option>
+                      <option value="week">This Week</option>
+                      <option value="month">This Month</option>
+                  </select>
+              </div>
+          </div>
+          
+          <div class="leaderboard-list">
+              {% if leaderboard %}
+                  {% for score, username in leaderboard %}
+                      <div class="leaderboard-item {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
+                          <div class="rank">
+                              {% if loop.index == 1 %}
+                                  <i class="fas fa-crown gold"></i>
+                              {% elif loop.index == 2 %}
+                                  <i class="fas fa-medal silver"></i>
+                              {% elif loop.index == 3 %}
+                                  <i class="fas fa-medal bronze"></i>
+                              {% else %}
+                                  <span class="rank-number">{{ loop.index }}</span>
+                              {% endif %}
+                          </div>
+                          <div class="player-info">
+                              <span class="player-name">{{ username }}</span>
+                              <span class="player-score">{{ score.score }}</span>
+                          </div>
+                          <div class="score-tokens">
+                              <i class="fas fa-coins"></i>
+                              {{ score.tokens_earned }}
+                          </div>
+                      </div>
+                  {% endfor %}
+              {% else %}
+                  <div class="empty-leaderboard">
+                      <i class="fas fa-trophy"></i>
+                      <p>No scores yet. Be the first to play!</p>
+                  </div>
+              {% endif %}
+          </div>
+      </div>
+  </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+// CLEANED UP JAVASCRIPT - NO LOCAL GAME LOGIC, ONLY PYTHON BACKEND COMMUNICATION
+
 let gameActive = false;
-let currentScore = 0;
-let gameEngine = null;
 
-// Game control functions
+// Enhanced Game Control Functions - PYTHON BACKEND ONLY
 async function startGame() {
-    if (gameActive) return;
-    
-    try {
-        // Request camera access
-        const stream = await navigator.mediaDevices.getUserMedia({ 
-            video: { width: 640, height: 480 } 
-        });
-        
-        const video = document.getElementById('gameVideo');
-        video.srcObject = stream;
-        
-        // Initialize game engine based on game type
-        const gameType = '{{ game_id }}';
-        gameEngine = await initializeGameEngine(gameType, video);
-        
-        gameActive = true;
-        updateGameUI();
-        updateGameStatus('Game started! Show your hand to the camera.');
-        
-    } catch (error) {
-        console.error('Error starting game:', error);
-        updateGameStatus('Error: Could not access camera. Please check permissions.');
-    }
+  if (gameActive) return;
+  
+  try {
+      console.log("🎮 Starting Python game backend...");
+      
+      // Start the Python game backend
+      const result = await pythonGameManager.startGame('{{ game_id }}');
+      
+      if (result.success) {
+          gameActive = true;
+          updateGameUI(true);
+          updateGameStatus('Game started! Make swipe gestures to slice fruits!');
+          console.log("✅ Python game started successfully");
+      } else {
+          updateGameStatus(`Error: ${result.message}`);
+          console.error("❌ Failed to start Python game:", result.message);
+      }
+      
+  } catch (error) {
+      console.error('❌ Error starting game:', error);
+      updateGameStatus('Error: Could not start game. Please try again.');
+      gameraArcade.showNotification("Could not start game. Please try again.", "error");
+  }
 }
 
-function stopGame() {
-    if (!gameActive) return;
-    
-    gameActive = false;
-    
-    // Stop camera stream
-    const video = document.getElementById('gameVideo');
-    if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-    }
-    
-    // Submit score if user is logged in
-    {% if session.user_id %}
-        if (currentScore > 0) {
-            submitScore(currentScore);
-        }
-    {% endif %}
-    
-    updateGameUI();
-    updateGameStatus('Game stopped. Final score: ' + currentScore);
+async function stopGame() {
+  if (!gameActive) return;
+  
+  try {
+      console.log("🛑 Stopping Python game backend...");
+      
+      const result = await pythonGameManager.stopGame();
+      gameActive = false;
+      updateGameUI(false);
+      
+      if (result && result.score !== undefined) {
+          updateGameStatus(`Game stopped! Final score: ${result.score}`);
+          
+          // Submit score if user is logged in
+          {% if session.user_id %}
+              if (result.score > 0) {
+                  await submitScore(result.score);
+              }
+          {% endif %}
+      } else {
+          updateGameStatus('Game stopped.');
+      }
+      
+      console.log("✅ Python game stopped successfully");
+      
+  } catch (error) {
+      console.error('❌ Error stopping game:', error);
+      updateGameStatus('Error stopping game');
+  }
 }
 
-async function initializeGameEngine(gameType, video) {
-    // TODO: Initialize specific game engines
-    // This is where you'll integrate the Python game engines
-    
-    switch(gameType) {
-        case 'fruit_ninja':
-            return await initializeFruitNinja(video);
-        case 'trex_run':
-            return await initializeTRexRun(video);
-        case 'rock_paper_scissors':
-            return await initializeRPS(video);
-        default:
-            throw new Error('Game engine not implemented');
-    }
-}
-
-async function initializeFruitNinja(video) {
-    // TODO: Integrate with Python Fruit Ninja engine
-    // For now, this is a placeholder that simulates the game
-    
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-    
-    // Set canvas size to match video
-    canvas.width = video.videoWidth || 640;
-    canvas.height = video.videoHeight || 480;
-    
-    // Game loop simulation
-    const gameLoop = setInterval(() => {
-        if (!gameActive) {
-            clearInterval(gameLoop);
-            return;
-        }
-        
-        // Simulate score increase (replace with actual game logic)
-        if (Math.random() > 0.95) {
-            currentScore += Math.floor(Math.random() * 10) + 1;
-            updateScore(currentScore);
-        }
-        
-        // Draw video frame
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // TODO: Add actual game rendering here
-        // This should integrate with your Python OpenCV/MediaPipe code
-        
-    }, 1000/30); // 30 FPS
-    
-    return { gameLoop };
-}
-
-function updateScore(score) {
-    currentScore = score;
-    document.getElementById('currentScore').textContent = score;
+function updateGameUI(isRunning) {
+  const startBtn = document.getElementById('startGameBtn');
+  const stopBtn = document.getElementById('stopGameBtn');
+  
+  if (startBtn && stopBtn) {
+      if (isRunning) {
+          startBtn.style.display = 'none';
+          stopBtn.style.display = 'inline-flex';
+          startBtn.classList.remove('pulse');
+          stopBtn.classList.add('pulse');
+      } else {
+          startBtn.style.display = 'inline-flex';
+          stopBtn.style.display = 'none';
+          stopBtn.classList.remove('pulse');
+          startBtn.classList.add('pulse');
+      }
+  }
 }
 
 function updateGameStatus(status) {
-    document.getElementById('gameStatus').textContent = status;
-}
-
-function updateGameUI() {
-    const startBtn = document.getElementById('startGameBtn');
-    const stopBtn = document.getElementById('stopGameBtn');
-    
-    if (gameActive) {
-        startBtn.style.display = 'none';
-        stopBtn.style.display = 'inline-flex';
-    } else {
-        startBtn.style.display = 'inline-flex';
-        stopBtn.style.display = 'none';
-    }
+  const statusElement = document.getElementById('gameStatus');
+  if (statusElement) {
+      statusElement.textContent = status;
+      console.log("📝 Status updated:", status);
+  }
 }
 
 async function submitScore(score) {
-    try {
-        const response = await fetch('/api/submit_score', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                game_name: '{{ game_id }}',
-                score: score
-            })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-            updateGameStatus(`Score submitted! Earned ${data.tokens_earned} tokens.`);
-            document.getElementById('tokensEarned').textContent = data.total_tokens;
-            
-            // TODO: Web3 Integration - Show token minting animation
-            showTokenAnimation(data.tokens_earned);
-        }
-        
-    } catch (error) {
-        console.error('Error submitting score:', error);
-    }
-}
-
-function showTokenAnimation(tokens) {
-    // TODO: Implement token earning animation
-    console.log(`Earned ${tokens} tokens!`);
+  try {
+      console.log("📊 Submitting score:", score);
+      
+      const response = await fetch('/api/submit_score', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              game_name: '{{ game_id }}',
+              score: score
+          })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+          updateGameStatus(`Score submitted! Earned ${data.tokens_earned} tokens.`);
+          document.getElementById('tokensEarned').textContent = data.total_tokens;
+          gameraArcade.showNotification(`Score submitted! Earned ${data.tokens_earned} tokens! 🎉`, "success");
+          console.log("✅ Score submitted successfully");
+      }
+      
+  } catch (error) {
+      console.error('❌ Error submitting score:', error);
+      gameraArcade.showNotification("Failed to submit score", "error");
+  }
 }
 
 // Load personal best score
 document.addEventListener('DOMContentLoaded', function() {
-    // TODO: Load user's personal best for this game
-    document.getElementById('personalBest').textContent = '0';
+  // TODO: Load user's personal best for this game
+  document.getElementById('personalBest').textContent = '0';
+  
+  console.log("🎮 Game page loaded for: {{ game_id }}");
+  console.log("🐍 Python OpenCV/MediaPipe integration ready!");
+  console.log("📹 Video stream should be available at: /api/game/video_feed");
 });
+
+function filterLeaderboard() {
+  console.log("🏆 Filtering leaderboard...");
+  // TODO: Implement leaderboard filtering
+}
 </script>
 {% endblock %}
