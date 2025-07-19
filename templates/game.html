@@ -69,6 +69,10 @@
                       <i class="fas fa-play"></i>
                       Start Game
                   </button>
+                   <button class="game-btn danger" id="restartGameBtn" onclick="restartGame()" style="display: none;">
+                     <i class="fas fa-redo"></i>
+                     Restart
+                </button>
                   <button class="game-btn secondary" id="stopGameBtn" onclick="stopGame()" style="display: none;">
                       <i class="fas fa-stop"></i>
                       Stop Game
@@ -217,6 +221,7 @@ async function stopGame() {
                   await submitScore(result.score);
               }
           {% endif %}
+          
       } else {
           updateGameStatus('Game stopped.');
       }
@@ -232,19 +237,19 @@ async function stopGame() {
 function updateGameUI(isRunning) {
   const startBtn = document.getElementById('startGameBtn');
   const stopBtn = document.getElementById('stopGameBtn');
-  
-  if (startBtn && stopBtn) {
-      if (isRunning) {
-          startBtn.style.display = 'none';
-          stopBtn.style.display = 'inline-flex';
-          startBtn.classList.remove('pulse');
-          stopBtn.classList.add('pulse');
-      } else {
-          startBtn.style.display = 'inline-flex';
-          stopBtn.style.display = 'none';
-          stopBtn.classList.remove('pulse');
-          startBtn.classList.add('pulse');
-      }
+  const restartBtn = document.getElementById('restartGameBtn');
+
+ if (isRunning) {
+    startBtn.style.display = 'none';
+    stopBtn.style.display = 'inline-flex';
+    restartBtn.style.display = 'none';
+    stopBtn.classList.add('pulse');
+  } else {
+    startBtn.style.display = 'inline-flex';
+    stopBtn.style.display = 'none';
+    restartBtn.style.display = 'inline-flex';
+    stopBtn.classList.remove('pulse');
+    startBtn.classList.add('pulse');
   }
 }
 
@@ -300,5 +305,26 @@ function filterLeaderboard() {
   console.log("🏆 Filtering leaderboard...");
   // TODO: Implement leaderboard filtering
 }
+
+async function restartGame() {
+  try {
+    console.log("🔄 Restarting game...");
+    
+    const response = await fetch('/api/game/reset', { method: 'POST' });
+    const data = await response.json();
+    
+    if (data.success) {
+      updateGameUI(true);
+      updateGameStatus("Game restarted! Swipe to slice fruits!");
+      console.log("✅ Game restarted");
+    } else {
+      updateGameStatus("❌ Failed to restart: " + data.message);
+    }
+  } catch (err) {
+    console.error("❌ Restart error:", err);
+    updateGameStatus("Failed to restart game.");
+  }
+}
+
 </script>
 {% endblock %}

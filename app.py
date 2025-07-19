@@ -48,14 +48,14 @@ GAMES_CONFIG = {
         'name': 'T-Rex Run',
         'description': 'Jump over obstacles with hand-up gesture!',
         'thumbnail': '/static/images/trex_thumb.jpg',
-        'status': 'coming_soon',
+        'status': 'active',
         'engine': 'trex_engine'
     },
     'rock_paper_scissors': {
         'name': 'Rock Paper Scissors',
         'description': 'Battle the computer with real gestures!',
         'thumbnail': '/static/images/rps_thumb.jpg',
-        'status': 'coming_soon',
+        'status': 'active',
         'engine': 'rps_engine'
     },
     'breakout': {
@@ -186,6 +186,20 @@ def stop_game_api():
         return jsonify(result)
     except Exception as e:
         print(f"❌ API: Error stopping game: {e}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/api/game/reset', methods=['POST'])
+def reset_game_api():
+    """Reset the current game without reloading the page"""
+    try:
+        print("🔄 API: Resetting current game...")
+        if game_manager.current_game:
+            game_manager.current_game.reset_game()
+            return jsonify({'success': True, 'message': 'Game reset'})
+        else:
+            return jsonify({'success': False, 'message': 'No active game to reset'}), 400
+    except Exception as e:
+        print(f"❌ API: Error resetting game: {e}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/api/game/state')

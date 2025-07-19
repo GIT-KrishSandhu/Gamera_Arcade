@@ -21,6 +21,7 @@ class GameraArcade {
   }
 
   onReady() {
+    
     this.loadUserPreferences()
     this.initializeAnimations()
     console.log("🎮 Gamera Arcade initialized successfully!")

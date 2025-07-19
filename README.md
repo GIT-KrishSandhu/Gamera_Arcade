@@ -50,7 +50,11 @@ python app.py
 \`\`\`
 
 4. **Open your browser**
-Navigate to `http://localhost:5000`
+Navigate to `http://const isLoggedIn = {{ 'true' if session.get('user_id') else 'false' }};
+
+if (isLoggedIn && result.score > 0) {
+    await submitScore(result.score);
+}localhost:5000`
 
 ## 🎯 How to Play
 

@@ -59,12 +59,12 @@ class FruitNinjaGame:
         self.processed_frame = None
         
     def start_game(self):
-        """Initialize and start the game - FIXED CAMERA INDEX"""
+        """Initialize and start the game - AUTO-DETECT CAMERA"""
         print("🎮 Starting Fruit Ninja game...")
-        
+
         # COMPLETE cleanup first
         self._force_cleanup()
-        
+
         with self.lock:
             self.is_running = True
             self.game_over = False
@@ -77,35 +77,37 @@ class FruitNinjaGame:
             self.hand_positions = []
             self.last_hand_pos = None
             self.game_over_time = None
-        
-        # Initialize camera with FIXED INDEX 1
-        try:
-            print("📹 Attempting to open camera index 1...")
-            self.cap = cv2.VideoCapture(1)
-            
-            if not self.cap.isOpened():
-                raise Exception("Could not open camera")
-            
-            print("📹 Camera opened successfully")
-            
-            # Set camera properties with error handling
-            try:
-                self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-                self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-                self.cap.set(cv2.CAP_PROP_FPS, 30)
-                self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)  # Reduce buffer
-            except:
-                print("⚠️ Could not set camera properties, using defaults")
-            
-            print("🍎 Fruit Ninja game started successfully!")
-            print("📹 Camera initialized and ready")
-            return {"success": True, "message": "Game started successfully!"}
-            
-        except Exception as e:
-            print(f"❌ Camera initialization failed: {e}")
+
+        # 🔍 Try to find first working camera index (0–5)
+        print("🔍 Scanning for available cameras...")
+        self.cap = None
+        for cam_index in range(5):  # Try indexes 0 to 4
+            temp_cap = cv2.VideoCapture(cam_index)
+            if temp_cap.isOpened():
+                self.cap = temp_cap
+                print(f"📹 Camera found at index {cam_index}")
+                break
+            else:
+                temp_cap.release()
+
+        if self.cap is None or not self.cap.isOpened():
+            print("❌ No available camera found.")
             self.is_running = False
-            return {"success": False, "message": f"Camera error: {str(e)}"}
-    
+            return {"success": False, "message": "No available camera found."}
+
+        # Set camera properties
+        try:
+            self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+            self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+            self.cap.set(cv2.CAP_PROP_FPS, 30)
+            self.cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+            print("📸 Camera properties set.")
+        except:
+            print("⚠️ Could not set camera properties, using defaults.")
+
+        print("🍎 Fruit Ninja game started successfully!")
+        return {"success": True, "message": "Game started with auto-detected camera."}
+
     
     def _force_cleanup(self):
         """BULLETPROOF resource cleanup"""
@@ -121,8 +123,8 @@ class FruitNinjaGame:
                 except Exception as e:
                     print(f"⚠️ Camera release attempt {attempt + 1} failed: {e}")
                     time.sleep(0.1)
-                finally:
-                    self.cap = None
+                
+            self.cap = None
         
         # Force OpenCV cleanup
         try:
@@ -156,6 +158,9 @@ class FruitNinjaGame:
         final_score = self.score
         self._force_cleanup()
         
+        self.processed_frame =None
+        self.frame=None
+
         print(f"🛑 Fruit Ninja game stopped! Final Score: {final_score}")
         return {"success": True, "score": final_score, "message": "Game stopped!"}
     
@@ -177,6 +182,10 @@ class FruitNinjaGame:
             
             # Process the frame
             self.process_frame(frame)
+
+            if self.processed_frame is None:
+                print("⚠️ No processed frame available")
+                return None
             
             # Convert to base64 for web transmission
             _, buffer = cv2.imencode('.jpg', self.processed_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
@@ -192,52 +201,59 @@ class FruitNinjaGame:
         """Process frame for hand detection and game logic - BULLETPROOF"""
         if self.stop_requested:
             return
-            
+
         height, width, _ = frame.shape
-        
-        # Only process game logic if not game over and not stopping
-        if not self.game_over and not self.stop_requested and self.is_running:
-            try:
+
+        try:
+            # Only process game logic if not game over and not stopping
+            if not self.game_over and not self.stop_requested and self.is_running:
                 rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                
+
                 # Hand detection
                 results = self.hands.process(rgb_frame)
-                
+
                 # Update game logic
                 self.update_fruits(width, height)
                 self.update_particles()
-                
+
                 # Draw game elements
                 self.draw_fruits(frame)
                 self.draw_particles(frame)
-                
+
                 # Process hand landmarks
                 if results.multi_hand_landmarks:
                     for hand_landmarks in results.multi_hand_landmarks:
-                        # Draw hand landmarks
                         self.mp_draw.draw_landmarks(frame, hand_landmarks, self.mp_hands.HAND_CONNECTIONS)
-                        
-                        # Get fingertip position (index finger tip)
+
                         index_tip = hand_landmarks.landmark[8]
                         finger_x = int(index_tip.x * width)
                         finger_y = int(index_tip.y * height)
-                        
-                        # Draw finger position
                         cv2.circle(frame, (finger_x, finger_y), 10, (0, 255, 255), -1)
-                        
-                        # Track hand movement for swipe detection
+
                         self.track_hand_movement(finger_x, finger_y)
-            except Exception as e:
-                print(f"❌ Error in game logic: {e}")
-        
-        # Always draw UI elements
-        self.draw_ui(frame)
-        
-        # Draw game over overlay if needed - ENHANCED
-        if self.game_over and not self.stop_requested:
-            self.draw_game_over_overlay(frame)
-        
-        self.processed_frame = frame
+
+            # Always draw UI
+            self.draw_ui(frame)
+
+            # Handle Game Over overlay and auto-stop
+            if self.game_over and not self.stop_requested:
+                self.draw_game_over_overlay(frame)
+
+                if self.game_over_time and (time.time() - self.game_over_time > 3):
+                    print("🛑 Auto-stopping game after Game Over delay...")
+                    self.stop_game()
+                    self.processed_frame = None
+                    return  # Exit immediately to avoid frame assignment after cleanup
+
+            # Final safety check before assigning
+            if self.stop_requested or not self.cap:
+                return
+
+            self.processed_frame = frame
+
+        except Exception as e:
+            print(f"❌ Error in process_frame: {e}")
+
     
     def draw_game_over_overlay(self, frame):
         """Draw ENHANCED game over overlay"""
@@ -383,10 +399,10 @@ class FruitNinjaGame:
                         self.lives -= 1
                         print(f"💔 Life lost! Lives remaining: {self.lives}")
                     
-                        if self.lives <= 0:
+                        if self.lives <= 0 and not self.game_over:
                             print("💀 All lives lost - TRIGGERING GAME OVER!")
                             self.trigger_game_over()
-                            return
+                            
         
             # Remove fruits that are off screen
             for i in reversed(fruits_to_remove):
@@ -496,44 +512,277 @@ class FruitNinjaGame:
                 'game_over_displayed': self.game_over_displayed
             }
 
-
 class TRexRunGame:
-    """Placeholder for T-Rex Run game"""
     def __init__(self):
+
+        self.trex_img = cv2.imread("static/images/trex.png", cv2.IMREAD_UNCHANGED)
+        self.cactus_img = cv2.imread("static/images/cactus.png", cv2.IMREAD_UNCHANGED)
+        
+        if self.trex_img is None:
+            print("❌ Could not load trex.png")
+        if self.cactus_img is None:
+            print("❌ Could not load cactus.png")
+            
+        # Game state
         self.is_running = False
         self.score = 0
-    
+        self.lives = 1
+        self.trex_y = 0
+        self.jump_velocity = 0
+        self.gravity = 1
+        self.is_jumping = False
+        self.obstacles = []
+        self.frame = None
+        self.cap = None
+        self.hand_detected = False
+        self.hands = mp.solutions.hands.Hands(
+            static_image_mode=False,
+            max_num_hands=1,
+            min_detection_confidence=0.7,
+            min_tracking_confidence=0.5
+        )
+        self.lock = Lock()
+        self.ground_y = 300  # ground level
+        self.jump_power = -12
+        self.trex_x = 50
+        self.last_spawn_time = 0
+        self.spawn_delay = 2
+        self.obstacle_speed = 6
+
     def start_game(self):
-        return {"success": False, "message": "T-Rex Run coming soon!"}
-    
+        self.is_running = True
+        self.score = 0
+        self.trex_y = self.ground_y
+        self.jump_velocity = 0
+        self.is_jumping = False
+        self.obstacles = []
+        self.cap = cv2.VideoCapture(0)
+        return {"success": True, "message": "T-Rex Run game started!"}
+
     def stop_game(self):
-        return {"success": True, "score": 0}
-    
+        self.is_running = False
+        if self.cap:
+            self.cap.release()
+            self.cap = None
+        cv2.destroyAllWindows()
+        return {"success": True, "score": self.score}
+
     def get_frame(self):
-        return None
-    
+        if not self.cap or not self.cap.isOpened():
+            return None
+
+        ret, frame = self.cap.read()
+        if not ret:
+            return None
+
+        frame = cv2.flip(frame, 1)
+        height, width, _ = frame.shape
+        self.detect_hand(frame)
+        self.update_game_logic(width, height)
+        self.draw_elements(frame)
+
+        _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        frame_base64 = base64.b64encode(buffer).decode('utf-8')
+        return frame_base64
+
+    def detect_hand(self, frame):
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = self.hands.process(rgb)
+        self.hand_detected = bool(results.multi_hand_landmarks)
+
+    def update_game_logic(self, width, height):
+        if not self.is_running:
+            return
+
+        # Jump logic
+        if self.hand_detected and not self.is_jumping:
+            self.is_jumping = True
+            self.jump_velocity = self.jump_power
+
+        if self.is_jumping:
+            self.trex_y += self.jump_velocity
+            self.jump_velocity += self.gravity
+            if self.trex_y >= self.ground_y:
+                self.trex_y = self.ground_y
+                self.is_jumping = False
+
+        # Spawn obstacles
+        current_time = time.time()
+        if current_time - self.last_spawn_time > self.spawn_delay:
+            self.obstacles.append({'x': width + 50})
+            self.last_spawn_time = current_time
+
+        # Move obstacles
+        for obs in self.obstacles:
+            obs['x'] -= self.obstacle_speed
+
+        # Remove off-screen obstacles
+        self.obstacles = [obs for obs in self.obstacles if obs['x'] > -50]
+
+        # Collision detection
+        for obs in self.obstacles:
+            if obs['x'] < self.trex_x + 30 and obs['x'] > self.trex_x:
+                if self.trex_y + 50 >= self.ground_y:
+                    self.is_running = False
+                    self.lives = 0
+
+        if self.is_running:
+            self.score += 1
+
+    def draw_elements(self, frame):
+        # Draw ground
+        cv2.line(frame, (0, self.ground_y + 50), (frame.shape[1], self.ground_y + 50), (100, 100, 100), 2)
+
+        # Draw T-Rex
+        cv2.rectangle(frame, (self.trex_x, int(self.trex_y)), (self.trex_x + 30, int(self.trex_y) + 50), (0, 255, 0), -1)
+
+        # Draw obstacles
+        for obs in self.obstacles:
+            cv2.rectangle(frame, (obs['x'], self.ground_y + 20), (obs['x'] + 20, self.ground_y + 50), (0, 0, 255), -1)
+
+        # Draw Score
+        cv2.putText(frame, f"Score: {self.score}", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+
+        # Game Over
+        if not self.is_running:
+            cv2.putText(frame, "GAME OVER", (frame.shape[1]//2 - 150, frame.shape[0]//2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+
     def get_game_state(self):
-        return {'is_running': False, 'score': 0}
+        return {
+            "is_running": self.is_running,
+            "score": self.score,
+            "lives": self.lives
+        }
 
 
 class RockPaperScissorsGame:
-    """Placeholder for Rock Paper Scissors game"""
     def __init__(self):
+        self.timer_duration = 3  # seconds
+        self.timer_start = None
+        self.countdown_text = ""
+        self.round_active = False
         self.is_running = False
-        self.score = 0
-    
-    def start_game(self):
-        return {"success": False, "message": "Rock Paper Scissors coming soon!"}
-    
-    def stop_game(self):
-        return {"success": True, "score": 0}
-    
-    def get_frame(self):
-        return None
-    
-    def get_game_state(self):
-        return {'is_running': False, 'score': 0}
+        self.user_move = None
+        self.computer_move = None
+        self.result = None
+        self.cap = None
+        self.last_play_time = 0
+        self.play_interval = 3  # seconds
 
+        self.hands = mp.solutions.hands.Hands(
+            max_num_hands=1,
+            min_detection_confidence=0.7,
+            min_tracking_confidence=0.5
+        )
+        self.mp_draw = mp.solutions.drawing_utils
+        self.lock = Lock()
+
+    def start_game(self):
+        self.is_running = True
+        self.user_move = ""
+        self.computer_move = ""
+        self.result = ""
+        self.last_play_time = time.time()
+        self.cap = cv2.VideoCapture(0)
+        return {"success": True, "message": "Rock Paper Scissors game started!"}
+
+    def stop_game(self):
+        self.is_running = False
+        if self.cap:
+            self.cap.release()
+            self.cap = None
+        cv2.destroyAllWindows()
+        return {"success": True, "result": self.result}
+
+    def get_frame(self):
+        if not self.cap or not self.cap.isOpened():
+            return None
+
+        ret, frame = self.cap.read()
+        if not ret:
+            return None
+
+        frame = cv2.flip(frame, 1)
+        self.detect_gesture_and_play(frame)
+        self.draw_overlay(frame)
+
+        _, buffer = cv2.imencode('.jpg', frame)
+        return base64.b64encode(buffer).decode('utf-8')
+
+    def detect_gesture_and_play(self, frame):
+        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = self.hands.process(rgb)
+
+        now = time.time()
+
+        # Start new round if enough time has passed
+        if not self.round_active and (now - self.last_play_time) > 5:  # 5 sec gap between rounds
+            self.timer_start = now
+            self.round_active = True
+            self.countdown_text = "Get Ready..."
+
+        if self.round_active:
+            elapsed = now - self.timer_start
+            remaining = int(self.timer_duration - elapsed)
+
+        if remaining > 0:
+            self.countdown_text = str(remaining + 1)  # Show 3,2,1
+        elif 0 <= elapsed < self.timer_duration + 1:
+            self.countdown_text = "GO!"
+            # Detect gesture during this moment
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    fingers = []
+                    lm = hand_landmarks.landmark
+
+                    # Thumb
+                    fingers.append(1 if lm[4].x < lm[3].x else 0)
+
+                    # Other fingers
+                    for tip in [8, 12, 16, 20]:
+                        fingers.append(1 if lm[tip].y < lm[tip - 2].y else 0)
+
+                    self.user_move = self.get_gesture_from_fingers(fingers)
+
+            self.computer_move = random.choice(["Rock", "Paper", "Scissors"])
+            self.result = self.get_winner(self.user_move, self.computer_move)
+
+        else:
+            # Reset round
+            self.last_play_time = now
+            self.round_active = False
+            self.countdown_text = ""
+
+    def get_gesture_from_fingers(self, fingers):
+        if fingers == [0, 0, 0, 0, 0]:
+            return "Rock"
+        elif fingers == [1, 1, 1, 1, 1] or fingers == [0, 1, 1, 1, 1]:
+            return "Paper"
+        elif fingers == [0, 1, 1, 0, 0]:
+            return "Scissors"
+        return "Unknown"
+
+    def get_winner(self, user, comp):
+        if user == comp:
+            return "Draw"
+        if (user == "Rock" and comp == "Scissors") or \
+           (user == "Paper" and comp == "Rock") or \
+           (user == "Scissors" and comp == "Paper"):
+            return "You Win"
+        return "Computer Wins"
+
+    def draw_overlay(self, frame):
+        h, w, _ = frame.shape
+        cv2.putText(frame, f"You: {self.user_move}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 2)
+        cv2.putText(frame, f"Computer: {self.computer_move}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 0), 2)
+        cv2.putText(frame, f"Result: {self.result}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
+
+        # Countdown in center
+        if self.countdown_text:
+            cv2.putText(frame, self.countdown_text, (frame.shape[1]//2 - 50, frame.shape[0]//2),
+                        cv2.FONT_HERSHEY_SIMPLEX, 2.5, (0, 0, 255), 4)
 
 class GameManager:
     """Manages all games - BULLETPROOF"""
