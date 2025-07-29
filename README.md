@@ -34,27 +34,23 @@ A revolutionary web-based gaming platform that combines gesture control with Web
 ### Installation
 
 1. **Clone the repository**
-\`\`\`bash
-git clone <repository-url>
+```bash
+git clone https://github.com/GIT-KrishSandhu/Gamera_Arcade
 cd gamera-arcade
-\`\`\`
+```
 
 2. **Install dependencies**
-\`\`\`bash
+```bash
 pip install -r requirements.txt
-\`\`\`
+```
 
 3. **Run the application**
-\`\`\`bash
+```bash
 python app.py
-\`\`\`
+```
 
 4. **Open your browser**
-Navigate to `http://const isLoggedIn = {{ 'true' if session.get('user_id') else 'false' }};
-
-if (isLoggedIn && result.score > 0) {
-    await submitScore(result.score);
-}localhost:5000`
+Navigate to `Gamera Arcade`
 
 ## 🎯 How to Play
 
@@ -112,7 +108,7 @@ if (isLoggedIn && result.score > 0) {
 
 ## 📁 Project Structure
 
-\`\`\`
+```
 gamera-arcade/
 ├── app.py                 # Flask application
 ├── requirements.txt       # Python dependencies
@@ -130,15 +126,15 @@ gamera-arcade/
 │   ├── profile.html      # User profile
 │   └── auth.html         # Login/Register
 └── games/                # Game engine modules (future)
-\`\`\`
+```
 
 ## 🔧 Configuration
 
 ### Environment Variables
-\`\`\`bash
+```bash
 SECRET_KEY=your-secret-key-here
 DATABASE_URL=sqlite:///gamera_arcade.db
-\`\`\`
+```
 
 ### Camera Settings
 - Resolution: 640x480 (recommended)
@@ -150,28 +146,13 @@ DATABASE_URL=sqlite:///gamera_arcade.db
 - Score per fruit: 10 points
 - Token multiplier: Based on score/100
 
-## 🌐 Web3 Integration Guide
-
-For Web3 specialists implementing token functionality:
-
-### Key Integration Points
-1. **Wallet Connection** (`web3Manager.connectWallet()`)
-2. **Token Minting** (`calculate_tokens()` function)
-3. **Smart Contract Integration** (placeholder functions ready)
-4. **NFT Achievement System** (framework in place)
-
-### Implementation Areas
-- `static/js/main.js` - Web3Manager class
-- `app.py` - Token calculation and wallet storage
-- `templates/profile.html` - Wallet UI components
-
 ## 🐛 Troubleshooting
 
 ### Common Issues
 
 **Camera not working:**
 - Check browser permissions
-- Ensure camera isn't used by other apps
+- Ensure other apps aren't using the camera
 - Try refreshing the page
 - Use HTTPS in production
 
