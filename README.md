@@ -35,8 +35,8 @@ A revolutionary web-based gaming platform that combines gesture control with Web
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/GIT-KrishSandhu/Gamera_Arcade
-cd gamera-arcade
+git clone https://github.com/GIT-KrishSandhu/Gamera_Arcade.git
+cd Gamera_Arcade
 ```
 
 2. **Install dependencies**
