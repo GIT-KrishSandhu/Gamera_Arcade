@@ -1,7 +1,6 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<!-- Hero Section -->
 <section class="hero">
     <div class="hero-container">
         <div class="hero-content">
@@ -45,7 +44,6 @@
     </div>
 </section>
 
-<!-- Games Section -->
 <section class="games-section" id="games">
     <div class="section-container">
         <div class="section-header">
@@ -107,7 +105,47 @@
     </div>
 </section>
 
-<!-- Features Section -->
+<section class="leaderboard-section" id="leaderboard">
+    <div class="section-container">
+        <div class="section-header">
+            <h2 class="section-title">Coin Leaderboard</h2>
+            <p class="section-subtitle">Top players with the most coins</p>
+        </div>
+
+        <div class="leaderboard-list">
+            {% if users %}
+                {% for user in users %}
+                    <div class="leaderboard-item {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
+                        <div class="rank">
+                            {% if loop.index == 1 %}
+                                <i class="fas fa-crown gold"></i>
+                            {% elif loop.index == 2 %}
+                                <i class="fas fa-medal silver"></i>
+                            {% elif loop.index == 3 %}
+                                <i class="fas fa-medal bronze"></i>
+                            {% else %}
+                                <span class="rank-number">{{ loop.index }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="player-info">
+                            <span class="player-name">{{ user.username }}</span>
+                        </div>
+                        <div class="score-tokens">
+                            <i class="fas fa-coins"></i>
+                            {{ user.tokens }}
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-leaderboard">
+                    <i class="fas fa-trophy"></i>
+                    <p>No users yet. Be the first to register!</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
 <section class="features-section">
     <div class="section-container">
         <div class="section-header">
@@ -158,7 +196,6 @@
     </div>
 </section>
 
-<!-- Web3 Integration Info -->
 <section class="web3-section">
     <div class="section-container">
         <div class="web3-content">

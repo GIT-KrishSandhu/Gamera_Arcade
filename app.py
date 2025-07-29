@@ -23,7 +23,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(120), nullable=False)
     wallet_address = db.Column(db.String(42), nullable=True)  # Web3 wallet address
-    tokens = db.Column(db.Integer, default=0)  # Game tokens earned
+    tokens = db.Column(db.Integer, default=1000)  # Game tokens earned
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     scores = db.relationship('Score', backref='user', lazy=True)
 
@@ -40,21 +40,21 @@ GAMES_CONFIG = {
     'fruit_ninja': {
         'name': 'Fruit Ninja',
         'description': 'Slice fruits with hand gestures!',
-        'thumbnail': '/static/images/fruit_ninja_thumb.jpg',
+        'thumbnail': '/static/images/fruit_ninja_thumb.png',
         'status': 'active',
         'engine': 'fruit_ninja_engine'
     },
     'trex_run': {
         'name': 'T-Rex Run',
         'description': 'Jump over obstacles with hand-up gesture!',
-        'thumbnail': '/static/images/trex_thumb.jpg',
+        'thumbnail': '/static/images/trex_thumb.png',
         'status': 'active',
         'engine': 'trex_engine'
     },
     'rock_paper_scissors': {
         'name': 'Rock Paper Scissors',
         'description': 'Battle the computer with real gestures!',
-        'thumbnail': '/static/images/rps_thumb.jpg',
+        'thumbnail': '/static/images/rps_thumb.png',
         'status': 'active',
         'engine': 'rps_engine'
     },
@@ -77,7 +77,11 @@ GAMES_CONFIG = {
 # Routes
 @app.route('/')
 def index():
-    return render_template('index.html', games=GAMES_CONFIG)
+    users = User.query.order_by(User.tokens.desc()).limit(10).all()
+    user = None
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+    return render_template('index.html', games=GAMES_CONFIG, users=users, user=user)
 
 @app.route('/game/<game_id>')
 def game(game_id):
@@ -95,10 +99,15 @@ def game(game_id):
         .limit(10)\
         .all()
     
+    user = None
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        
     return render_template('game.html', 
                          game_id=game_id, 
                          game_config=game_config,
-                         leaderboard=leaderboard)
+                         leaderboard=leaderboard,
+                         user=user)
 
 @app.route('/profile')
 def profile():
@@ -127,6 +136,7 @@ def auth():
             if user and check_password_hash(user.password_hash, password):
                 session['user_id'] = user.id
                 session['username'] = user.username
+                session['tokens'] = user.tokens
                 flash('Login successful!', 'success')
                 return redirect(url_for('index'))
             else:
@@ -145,14 +155,16 @@ def auth():
                 user = User(
                     username=username,
                     email=email,
-                    password_hash=generate_password_hash(password)
+                    password_hash=generate_password_hash(password),
+                    tokens=1000
                 )
                 db.session.add(user)
                 db.session.commit()
                 
                 session['user_id'] = user.id
                 session['username'] = user.username
-                flash('Registration successful!', 'success')
+                session['tokens'] = user.tokens
+                flash('Registration successful! You have been awarded 1000 coins.', 'success')
                 return redirect(url_for('index'))
     
     return render_template('auth.html')
@@ -163,10 +175,30 @@ def logout():
     flash('Logged out successfully!', 'success')
     return redirect(url_for('index'))
 
+# API to get user coins
+@app.route('/api/user/coins')
+def get_user_coins():
+    if 'user_id' in session:
+        user = User.query.get(session['user_id'])
+        return jsonify({'coins': user.tokens})
+    return jsonify({'coins': 0})
+
 # Game API Routes
 @app.route('/api/game/start/<game_id>', methods=['POST'])
 def start_game_api(game_id):
     """Start a game"""
+    if 'user_id' not in session:
+        return jsonify({'success': False, 'message': 'You must be logged in to play.'})
+
+    user = User.query.get(session['user_id'])
+    if user.tokens < 20:
+        return jsonify({'success': False, 'message': 'You do not have enough coins to play.'})
+
+    user.tokens -= 20
+    db.session.commit()
+    session['tokens'] = user.tokens
+
+
     try:
         print(f"🎮 API: Starting game {game_id}")
         result = game_manager.start_game(game_id)
@@ -288,29 +320,56 @@ def submit_score():
     if not game_name or score is None:
         return jsonify({'error': 'Missing required fields'}), 400
     
-    # Calculate tokens earned (placeholder logic)
-    tokens_earned = calculate_tokens(game_name, score)
+    # Check for existing high score
+    existing_score = Score.query.filter_by(user_id=session['user_id'], game_name=game_name).first()
     
-    # Save score
-    new_score = Score(
-        user_id=session['user_id'],
-        game_name=game_name,
-        score=score,
-        tokens_earned=tokens_earned
-    )
-    db.session.add(new_score)
-    
-    # Update user tokens
-    user = User.query.get(session['user_id'])
-    user.tokens += tokens_earned
-    
-    db.session.commit()
-    
-    return jsonify({
-        'success': True,
-        'tokens_earned': tokens_earned,
-        'total_tokens': user.tokens
-    })
+    if existing_score:
+        if score > existing_score.score:
+            # Update existing score
+            existing_score.score = score
+            tokens_earned = calculate_tokens(game_name, score)
+            
+            # Update user tokens
+            user = User.query.get(session['user_id'])
+            user.tokens += tokens_earned
+            session['tokens'] = user.tokens
+            
+            db.session.commit()
+            
+            return jsonify({
+                'success': True,
+                'tokens_earned': tokens_earned,
+                'total_tokens': user.tokens,
+                'message': 'New high score!'
+            })
+        else:
+            return jsonify({
+                'success': True,
+                'message': 'Score not higher than personal best.'
+            })
+    else:
+        # Save new score
+        tokens_earned = calculate_tokens(game_name, score)
+        new_score = Score(
+            user_id=session['user_id'],
+            game_name=game_name,
+            score=score,
+            tokens_earned=tokens_earned
+        )
+        db.session.add(new_score)
+        
+        # Update user tokens
+        user = User.query.get(session['user_id'])
+        user.tokens += tokens_earned
+        session['tokens'] = user.tokens
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'tokens_earned': tokens_earned,
+            'total_tokens': user.tokens
+        })
 
 @app.route('/api/connect_wallet', methods=['POST'])
 def connect_wallet():

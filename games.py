@@ -514,22 +514,27 @@ class FruitNinjaGame:
 
 class TRexRunGame:
     def __init__(self):
-
         self.trex_img = cv2.imread("static/images/trex.png", cv2.IMREAD_UNCHANGED)
         self.cactus_img = cv2.imread("static/images/cactus.png", cv2.IMREAD_UNCHANGED)
         
-        if self.trex_img is None:
+        # Resize images to prevent drawing errors
+        if self.trex_img is not None:
+            self.trex_img = cv2.resize(self.trex_img, (80, 80))
+        else:
             print("❌ Could not load trex.png")
-        if self.cactus_img is None:
+
+        if self.cactus_img is not None:
+            self.cactus_img = cv2.resize(self.cactus_img, (50, 100))
+        else:
             print("❌ Could not load cactus.png")
             
         # Game state
         self.is_running = False
+        self.game_over = False
         self.score = 0
-        self.lives = 1
         self.trex_y = 0
         self.jump_velocity = 0
-        self.gravity = 1
+        self.gravity = 1.6
         self.is_jumping = False
         self.obstacles = []
         self.frame = None
@@ -542,29 +547,34 @@ class TRexRunGame:
             min_tracking_confidence=0.5
         )
         self.lock = Lock()
-        self.ground_y = 300  # ground level
-        self.jump_power = -12
+        self.ground_y = 350
+        self.jump_power = -20
         self.trex_x = 50
         self.last_spawn_time = 0
-        self.spawn_delay = 2
-        self.obstacle_speed = 6
-
+        self.spawn_delay = 2.5
+        self.obstacle_speed = 8
+        self.game_over_time = None
+        
     def start_game(self):
         self.is_running = True
+        self.game_over = False
         self.score = 0
         self.trex_y = self.ground_y
         self.jump_velocity = 0
         self.is_jumping = False
         self.obstacles = []
         self.cap = cv2.VideoCapture(0)
+        self.last_spawn_time = time.time()
+        self.obstacle_speed = 8
+        self.game_over_time = None
         return {"success": True, "message": "T-Rex Run game started!"}
 
     def stop_game(self):
         self.is_running = False
+        self.game_over = True
         if self.cap:
             self.cap.release()
             self.cap = None
-        cv2.destroyAllWindows()
         return {"success": True, "score": self.score}
 
     def get_frame(self):
@@ -576,11 +586,18 @@ class TRexRunGame:
             return None
 
         frame = cv2.flip(frame, 1)
-        height, width, _ = frame.shape
-        self.detect_hand(frame)
-        self.update_game_logic(width, height)
+        
+        # Only update game logic if the game is running and not over
+        if self.is_running and not self.game_over:
+            self.detect_hand(frame)
+            self.update_game_logic(frame.shape[1], frame.shape[0])
+            
         self.draw_elements(frame)
-
+        
+        # Automatically call stop_game after a 3-second game over delay
+        if self.game_over and (self.game_over_time is not None and time.time() - self.game_over_time > 3):
+            self.stop_game()
+            
         _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
         frame_base64 = base64.b64encode(buffer).decode('utf-8')
         return frame_base64
@@ -591,9 +608,6 @@ class TRexRunGame:
         self.hand_detected = bool(results.multi_hand_landmarks)
 
     def update_game_logic(self, width, height):
-        if not self.is_running:
-            return
-
         # Jump logic
         if self.hand_detected and not self.is_jumping:
             self.is_jumping = True
@@ -605,86 +619,138 @@ class TRexRunGame:
             if self.trex_y >= self.ground_y:
                 self.trex_y = self.ground_y
                 self.is_jumping = False
+                
+        # Increase speed gradually
+        self.obstacle_speed += 0.005
 
         # Spawn obstacles
         current_time = time.time()
         if current_time - self.last_spawn_time > self.spawn_delay:
-            self.obstacles.append({'x': width + 50})
+            self.obstacles.append({'x': width, 'width': 50, 'height': 100})
             self.last_spawn_time = current_time
+            self.spawn_delay = max(1.0, self.spawn_delay - 0.01)
 
         # Move obstacles
         for obs in self.obstacles:
             obs['x'] -= self.obstacle_speed
 
-        # Remove off-screen obstacles
-        self.obstacles = [obs for obs in self.obstacles if obs['x'] > -50]
-
         # Collision detection
+        trex_rect = (self.trex_x, int(self.trex_y - 80), 80, 80)
         for obs in self.obstacles:
-            if obs['x'] < self.trex_x + 30 and obs['x'] > self.trex_x:
-                if self.trex_y + 50 >= self.ground_y:
-                    self.is_running = False
-                    self.lives = 0
-
-        if self.is_running:
+            cactus_rect = (obs['x'], self.ground_y - 100, 50, 100)
+            if self.check_collision(trex_rect, cactus_rect):
+                self.game_over = True
+                self.game_over_time = time.time()
+                
+        # Update score only if the game is still running
+        if not self.game_over:
             self.score += 1
+            
+        # Remove off-screen obstacles
+        self.obstacles = [obs for obs in self.obstacles if obs['x'] > -obs['width']]
+
+    def check_collision(self, rect1, rect2):
+        x1, y1, w1, h1 = rect1
+        x2, y2, w2, h2 = rect2
+        
+        # Add a small buffer to make collision more forgiving
+        buffer = 10
+        if (x1 + buffer < x2 + w2 - buffer and
+            x1 + w1 - buffer > x2 + buffer and
+            y1 + buffer < y2 + h2 - buffer and
+            y1 + h1 - buffer > y2 + buffer):
+            return True
+        return False
 
     def draw_elements(self, frame):
         # Draw ground
-        cv2.line(frame, (0, self.ground_y + 50), (frame.shape[1], self.ground_y + 50), (100, 100, 100), 2)
+        cv2.line(frame, (0, self.ground_y), (frame.shape[1], self.ground_y), (100, 100, 100), 2)
 
-        # Draw T-Rex
-        cv2.rectangle(frame, (self.trex_x, int(self.trex_y)), (self.trex_x + 30, int(self.trex_y) + 50), (0, 255, 0), -1)
-
-        # Draw obstacles
-        for obs in self.obstacles:
-            cv2.rectangle(frame, (obs['x'], self.ground_y + 20), (obs['x'] + 20, self.ground_y + 50), (0, 0, 255), -1)
+        # Draw T-Rex and obstacles
+        if self.trex_img is not None:
+            self.overlay_image_alpha(frame, self.trex_img, (self.trex_x, int(self.trex_y - 80)))
+        if self.cactus_img is not None:
+            for obs in self.obstacles:
+                self.overlay_image_alpha(frame, self.cactus_img, (int(obs['x']), self.ground_y - 100))
 
         # Draw Score
         cv2.putText(frame, f"Score: {self.score}", (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 4)
+        cv2.putText(frame, f"Score: {self.score}", (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
-        # Game Over
-        if not self.is_running:
-            cv2.putText(frame, "GAME OVER", (frame.shape[1]//2 - 150, frame.shape[0]//2),
+        # Draw Game Over screen
+        if self.game_over:
+            text = "GAME OVER"
+            text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 2, 3)[0]
+            text_x = (frame.shape[1] - text_size[0]) // 2
+            text_y = (frame.shape[0] + text_size[1]) // 2
+            
+            cv2.putText(frame, text, (text_x, text_y),
                         cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 0, 255), 3)
+
+    def overlay_image_alpha(self, img, img_overlay, pos):
+        x, y = pos
+        h_overlay, w_overlay = img_overlay.shape[:2]
+
+        h_img, w_img = img.shape[:2]
+
+        if x >= w_img or y >= h_img or x + w_overlay <= 0 or y + h_overlay <= 0:
+            return
+
+        x_start = max(0, -x)
+        y_start = max(0, -y)
+        x_end = min(w_overlay, w_img - x)
+        y_end = min(h_overlay, h_img - y)
+
+        if x_end <= x_start or y_end <= y_start:
+            return
+
+        img_overlay_cropped = img_overlay[y_start:y_end, x_start:x_end]
+
+        x_pos = max(0, x)
+        y_pos = max(0, y)
+
+        roi = img[y_pos:y_pos + (y_end - y_start), x_pos:x_pos + (x_end - x_start)]
+        
+        alpha = img_overlay_cropped[:, :, 3] / 255.0
+        alpha = np.expand_dims(alpha, axis=2)
+
+        roi[:] = (1.0 - alpha) * roi + alpha * img_overlay_cropped[:, :, :3]
 
     def get_game_state(self):
         return {
             "is_running": self.is_running,
             "score": self.score,
-            "lives": self.lives
+            "lives": 1 if self.is_running else 0
         }
-
 
 class RockPaperScissorsGame:
     def __init__(self):
-        self.timer_duration = 3  # seconds
-        self.timer_start = None
-        self.countdown_text = ""
-        self.round_active = False
         self.is_running = False
-        self.user_move = None
-        self.computer_move = None
-        self.result = None
         self.cap = None
-        self.last_play_time = 0
-        self.play_interval = 3  # seconds
-
+        self.lock = Lock()
         self.hands = mp.solutions.hands.Hands(
             max_num_hands=1,
             min_detection_confidence=0.7,
             min_tracking_confidence=0.5
         )
         self.mp_draw = mp.solutions.drawing_utils
-        self.lock = Lock()
+        self.reset_game()
+
+    def reset_game(self):
+        self.score = 0
+        self.user_move = None
+        self.computer_move = None
+        self.result = None
+        self.round_active = False
+        self.timer_start = None
+        self.countdown = 0
+        self.last_play_time = 0
 
     def start_game(self):
         self.is_running = True
-        self.user_move = ""
-        self.computer_move = ""
-        self.result = ""
-        self.last_play_time = time.time()
+        self.reset_game()
         self.cap = cv2.VideoCapture(0)
         return {"success": True, "message": "Rock Paper Scissors game started!"}
 
@@ -693,8 +759,7 @@ class RockPaperScissorsGame:
         if self.cap:
             self.cap.release()
             self.cap = None
-        cv2.destroyAllWindows()
-        return {"success": True, "result": self.result}
+        return {"success": True, "score": self.score}
 
     def get_frame(self):
         if not self.cap or not self.cap.isOpened():
@@ -705,66 +770,73 @@ class RockPaperScissorsGame:
             return None
 
         frame = cv2.flip(frame, 1)
+        
         self.detect_gesture_and_play(frame)
         self.draw_overlay(frame)
 
-        _, buffer = cv2.imencode('.jpg', frame)
+        _, buffer = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
         return base64.b64encode(buffer).decode('utf-8')
 
     def detect_gesture_and_play(self, frame):
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self.hands.process(rgb)
-
         now = time.time()
 
-        # Start new round if enough time has passed
-        if not self.round_active and (now - self.last_play_time) > 5:  # 5 sec gap between rounds
-            self.timer_start = now
+        if not self.round_active and (now - self.last_play_time) > 2:
             self.round_active = True
-            self.countdown_text = "Get Ready..."
+            self.timer_start = now
+            self.user_move = None
+            self.computer_move = None
+            self.result = None
 
         if self.round_active:
             elapsed = now - self.timer_start
-            remaining = int(self.timer_duration - elapsed)
+            self.countdown = 3 - int(elapsed)
 
-        if remaining > 0:
-            self.countdown_text = str(remaining + 1)  # Show 3,2,1
-        elif 0 <= elapsed < self.timer_duration + 1:
-            self.countdown_text = "GO!"
-            # Detect gesture during this moment
-            if results.multi_hand_landmarks:
-                for hand_landmarks in results.multi_hand_landmarks:
-                    fingers = []
-                    lm = hand_landmarks.landmark
+            if self.countdown <= 0:
+                self.countdown = 0
+                if self.user_move is None:
+                    self.computer_move = random.choice(["Rock", "Paper", "Scissors"])
+                    
+                    if results.multi_hand_landmarks:
+                        for hand_landmarks in results.multi_hand_landmarks:
+                            self.user_move = self.get_gesture_from_landmarks(hand_landmarks)
+                    else:
+                        self.user_move = "No gesture"
 
-                    # Thumb
-                    fingers.append(1 if lm[4].x < lm[3].x else 0)
+                    self.result = self.get_winner(self.user_move, self.computer_move)
+                    if self.result == "You Win":
+                        self.score += 1
+                        
+                if elapsed > 5:
+                    self.round_active = False
+                    self.last_play_time = now
 
-                    # Other fingers
-                    for tip in [8, 12, 16, 20]:
-                        fingers.append(1 if lm[tip].y < lm[tip - 2].y else 0)
+    def get_gesture_from_landmarks(self, hand_landmarks):
+        lm = hand_landmarks.landmark
+        
+        # Check which fingers are extended
+        fingers_up = []
+        for tip_id, pip_id in [(8, 6), (12, 10), (16, 14), (20, 18)]:
+            fingers_up.append(1 if lm[tip_id].y < lm[pip_id].y else 0)
+        
+        total_fingers = fingers_up.count(1)
 
-                    self.user_move = self.get_gesture_from_fingers(fingers)
-
-            self.computer_move = random.choice(["Rock", "Paper", "Scissors"])
-            self.result = self.get_winner(self.user_move, self.computer_move)
-
-        else:
-            # Reset round
-            self.last_play_time = now
-            self.round_active = False
-            self.countdown_text = ""
-
-    def get_gesture_from_fingers(self, fingers):
-        if fingers == [0, 0, 0, 0, 0]:
-            return "Rock"
-        elif fingers == [1, 1, 1, 1, 1] or fingers == [0, 1, 1, 1, 1]:
-            return "Paper"
-        elif fingers == [0, 1, 1, 0, 0]:
+        # Scissors: Index and middle finger are up
+        if total_fingers == 2 and fingers_up[0] and fingers_up[1]:
             return "Scissors"
-        return "Unknown"
+        # Paper: All four fingers are up
+        elif total_fingers == 4:
+            return "Paper"
+        # Rock: All four fingers are down
+        elif total_fingers == 0:
+            return "Rock"
+        else:
+            return "Invalid"
 
     def get_winner(self, user, comp):
+        if user == "Invalid" or user == "No gesture":
+            return "Play your move!"
         if user == comp:
             return "Draw"
         if (user == "Rock" and comp == "Scissors") or \
@@ -775,15 +847,35 @@ class RockPaperScissorsGame:
 
     def draw_overlay(self, frame):
         h, w, _ = frame.shape
-        cv2.putText(frame, f"You: {self.user_move}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 255), 2)
-        cv2.putText(frame, f"Computer: {self.computer_move}", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 0), 2)
-        cv2.putText(frame, f"Result: {self.result}", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
-
-        # Countdown in center
-        if self.countdown_text:
-            cv2.putText(frame, self.countdown_text, (frame.shape[1]//2 - 50, frame.shape[0]//2),
-                        cv2.FONT_HERSHEY_SIMPLEX, 2.5, (0, 0, 255), 4)
-
+        
+        # Draw Score
+        cv2.putText(frame, f"Score: {self.score}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 0), 6)
+        cv2.putText(frame, f"Score: {self.score}", (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 255), 2)
+        
+        # Draw Countdown
+        if self.round_active and self.countdown > 0:
+            text = str(self.countdown)
+            text_size = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 4, 10)[0]
+            text_x = (w - text_size[0]) // 2
+            text_y = (h + text_size[1]) // 2
+            cv2.putText(frame, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 4, (0, 0, 255), 10)
+        
+        # Draw Moves and Result
+        if self.user_move:
+            cv2.putText(frame, f"You: {self.user_move}", (10, h - 100), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 255), 4)
+            cv2.putText(frame, f"Computer: {self.computer_move}", (10, h - 50), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 255, 0), 4)
+        
+        if self.result:
+            result_size = cv2.getTextSize(self.result, cv2.FONT_HERSHEY_SIMPLEX, 2, 5)[0]
+            result_x = (w - result_size[0]) // 2
+            cv2.putText(frame, self.result, (result_x, 100), cv2.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 5)
+            
+    def get_game_state(self):
+        return {
+            "is_running": self.is_running,
+            "score": self.score
+        }
+    
 class GameManager:
     """Manages all games - BULLETPROOF"""
     def __init__(self):

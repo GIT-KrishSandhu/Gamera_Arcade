@@ -8,7 +8,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-brand">
@@ -19,7 +18,6 @@
             </div>
             
             <div class="nav-controls">
-                <!-- Theme Toggle -->
                 <div class="theme-toggle">
                     <input type="checkbox" id="theme-switch" class="theme-switch">
                     <label for="theme-switch" class="theme-label">
@@ -29,7 +27,13 @@
                     </label>
                 </div>
                 
-                <!-- Profile Dropdown -->
+                {% if session.user_id %}
+                <div class="nav-coins">
+                    <i class="fas fa-coins"></i>
+                    <span>{{ session.tokens }}</span>
+                </div>
+                {% endif %}
+
                 <div class="profile-dropdown">
                     {% if session.user_id %}
                         <button class="profile-btn" onclick="toggleDropdown()">
@@ -60,7 +64,6 @@
         </div>
     </nav>
 
-    <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             <div class="flash-messages">
@@ -76,12 +79,10 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Main Content -->
     <main class="main-content">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-section">
@@ -90,7 +91,6 @@
                     Revolutionary gesture-controlled gaming platform powered by AI and computer vision.
                 </p>
                 <div class="footer-social">
-                    <!-- TODO: Add actual social media links -->
                     <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-github"></i></a>
@@ -101,6 +101,8 @@
                 <h4 class="footer-subtitle">Team Members</h4>
                 <div class="team-member">
                     <strong>Lead Developer</strong><br>
+                    <strong>Krish Sandhu</strong><br>
+                    <strong>Raamanjal Singh Gangwar</strong><br>
                     <span class="contact-info">
                         <i class="fas fa-envelope"></i> lead@gamerarcade.com<br>
                         <i class="fas fa-phone"></i> +1 (555) 123-4567
@@ -141,7 +143,6 @@
         </div>
     </footer>
 
-    <!-- Web3 Modal (Placeholder) -->
     <div id="walletModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -156,8 +157,7 @@
                     <img src="/static/images/metamask-icon.png" alt="MetaMask" class="wallet-icon">
                     Connect MetaMask
                 </button>
-                <!-- TODO: Add more wallet options -->
-            </div>
+                </div>
         </div>
     </div>
 

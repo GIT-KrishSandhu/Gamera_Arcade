@@ -162,6 +162,18 @@ body {
   gap: var(--spacing-lg);
 }
 
+.nav-coins {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: var(--surface);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    color: var(--primary-green);
+    border: 2px solid var(--border);
+}
+
 /* Enhanced Theme Toggle */
 .theme-toggle {
   position: relative;

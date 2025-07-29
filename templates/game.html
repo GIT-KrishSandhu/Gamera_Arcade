@@ -15,6 +15,10 @@
                       <span class="stat-value" id="personalBest">Loading...</span>
                   </div>
                   <div class="stat-item">
+                      <span class="stat-label">Your Coins:</span>
+                      <span class="stat-value" id="userCoins">{% if user %}{{ user.tokens }}{% else %}0{% endif %}</span>
+                  </div>
+                  <div class="stat-item">
                       <span class="stat-label">Tokens Earned:</span>
                       <span class="stat-value" id="tokensEarned">0</span>
                   </div>
@@ -24,11 +28,9 @@
   </div>
 
   <div class="game-content">
-      <!-- Game Canvas Area -->
       <div class="game-canvas-section">
           <div class="canvas-container">
               {% if game_config.status == 'active' %}
-                  <!-- Python OpenCV Video Stream -->
                   <img id="gameVideo" class="game-video" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
                   <div class="game-overlay-ui">
                       <div class="score-display">
@@ -62,17 +64,12 @@
               {% endif %}
           </div>
           
-          <!-- MOVED GAME CONTROLS BELOW CAMERA -->
           {% if game_config.status == 'active' %}
               <div class="game-controls-bottom">
                   <button class="game-btn primary" id="startGameBtn" onclick="startGame()">
                       <i class="fas fa-play"></i>
-                      Start Game
+                      Start Game (20 coins)
                   </button>
-                   <button class="game-btn danger" id="restartGameBtn" onclick="restartGame()" style="display: none;">
-                     <i class="fas fa-redo"></i>
-                     Restart
-                </button>
                   <button class="game-btn secondary" id="stopGameBtn" onclick="stopGame()" style="display: none;">
                       <i class="fas fa-stop"></i>
                       Stop Game
@@ -87,7 +84,6 @@
               </div>
           {% endif %}
           
-          <!-- Game Instructions -->
           <div class="game-instructions">
               <h3>How to Play</h3>
               {% if game_id == 'fruit_ninja' %}
@@ -116,7 +112,6 @@
           </div>
       </div>
 
-      <!-- Leaderboard Section -->
       <div class="leaderboard-section">
           <div class="leaderboard-header">
               <h3 class="leaderboard-title">
@@ -150,10 +145,6 @@
                           <div class="player-info">
                               <span class="player-name">{{ username }}</span>
                               <span class="player-score">{{ score.score }}</span>
-                          </div>
-                          <div class="score-tokens">
-                              <i class="fas fa-coins"></i>
-                              {{ score.tokens_earned }}
                           </div>
                       </div>
                   {% endfor %}
@@ -192,6 +183,7 @@ async function startGame() {
           console.log("✅ Python game started successfully");
       } else {
           updateGameStatus(`Error: ${result.message}`);
+          gameraArcade.showNotification(result.message, "error");
           console.error("❌ Failed to start Python game:", result.message);
       }
       
@@ -237,17 +229,14 @@ async function stopGame() {
 function updateGameUI(isRunning) {
   const startBtn = document.getElementById('startGameBtn');
   const stopBtn = document.getElementById('stopGameBtn');
-  const restartBtn = document.getElementById('restartGameBtn');
 
  if (isRunning) {
     startBtn.style.display = 'none';
     stopBtn.style.display = 'inline-flex';
-    restartBtn.style.display = 'none';
     stopBtn.classList.add('pulse');
   } else {
     startBtn.style.display = 'inline-flex';
     stopBtn.style.display = 'none';
-    restartBtn.style.display = 'inline-flex';
     stopBtn.classList.remove('pulse');
     startBtn.classList.add('pulse');
   }
@@ -305,26 +294,5 @@ function filterLeaderboard() {
   console.log("🏆 Filtering leaderboard...");
   // TODO: Implement leaderboard filtering
 }
-
-async function restartGame() {
-  try {
-    console.log("🔄 Restarting game...");
-    
-    const response = await fetch('/api/game/reset', { method: 'POST' });
-    const data = await response.json();
-    
-    if (data.success) {
-      updateGameUI(true);
-      updateGameStatus("Game restarted! Swipe to slice fruits!");
-      console.log("✅ Game restarted");
-    } else {
-      updateGameStatus("❌ Failed to restart: " + data.message);
-    }
-  } catch (err) {
-    console.error("❌ Restart error:", err);
-    updateGameStatus("Failed to restart game.");
-  }
-}
-
 </script>
 {% endblock %}

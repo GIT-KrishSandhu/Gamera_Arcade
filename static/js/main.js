@@ -561,6 +561,7 @@ async function startGame() {
       updateGameStatus("Game started! Make swipe gestures to slice fruits!")
     } else {
       updateGameStatus(`Error: ${result.message}`)
+      gameraArcade.showNotification(result.message, "error");
     }
   } catch (error) {
     console.error("❌ Error starting game:", error)
