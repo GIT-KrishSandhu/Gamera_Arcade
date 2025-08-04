@@ -84,27 +84,6 @@ Navigate to `Gamera Arcade`
 - **Gesture Recognition**: Swipe and movement detection
 - **Camera Integration**: WebRTC for browser camera access
 
-### Web3 Integration (Placeholder)
-- **Wallet Connection**: MetaMask integration ready
-- **Token System**: Configurable reward economics
-- **NFT Support**: Achievement and collectible framework
-
-## Color Schemes
-
-### Light Mode (Green Theme)
-- Primary: `#8dd783` (Light Green)
-- Secondary: `#89ff76` (Bright Green)  
-- Accent: `#399a4b` (Dark Green)
-- Background: `#f8fffe` (Off White)
-- Surface: `#e8f5e8` (Light Green Tint)
-
-### Dark Mode (Blue Theme)
-- Primary: `#6699CC` (Blue Grey)
-- Secondary: `#7393B3` (Steel Blue)
-- Accent: `#5F9EA0` (Cadet Blue)
-- Background: `#1B1212` (Dark Brown)
-- Surface: `#36454F` (Charcoal)
-
 ## Project Structure
 
 ```
