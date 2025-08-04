@@ -37,13 +37,6 @@ class Score(db.Model):
 
 # Game Configuration
 GAMES_CONFIG = {
-    'fruit_ninja': {
-        'name': 'Fruit Ninja',
-        'description': 'Slice fruits with hand gestures!',
-        'thumbnail': '/static/images/fruit_ninja_thumb.png',
-        'status': 'active',
-        'engine': 'fruit_ninja_engine'
-    },
     'trex_run': {
         'name': 'T-Rex Run',
         'description': 'Jump over obstacles with hand-up gesture!',
@@ -58,6 +51,13 @@ GAMES_CONFIG = {
         'status': 'active',
         'engine': 'rps_engine'
     },
+    'fruit_ninja': {
+        'name': 'Fruit Ninja',
+        'description': 'Slice fruits with hand gestures!',
+        'thumbnail': '/static/images/fruit_ninja_thumb.png',
+        'status': 'active',
+        'engine': 'fruit_ninja_engine'
+    },
     'breakout': {
         'name': 'Gesture Breakout',
         'description': 'Control the paddle with your hand!',
@@ -71,6 +71,13 @@ GAMES_CONFIG = {
         'thumbnail': '/static/images/space_thumb.jpg',
         'status': 'coming_soon',
         'engine': 'space_engine'
+    },
+    'Snake_Game': {
+        'name': 'Snake Game',
+        'description': 'Navigate from a small worm to COBRA, eat as many apples as you can and avoid eating yourself!!',
+        'thumbnail': '/static/images/snake_game.jpg',
+        'status': 'coming_soon',
+        'engine': 'snake_engine'
     }
 }
 
