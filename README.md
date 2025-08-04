@@ -6,7 +6,6 @@ A revolutionary web-based gaming platform that combines gesture control with Web
 
 ### Core Features
 - **Gesture-Controlled Games**: Play games using hand movements detected by AI
-- **Web3 Integration**: Earn tokens and NFTs based on gaming performance
 - **Real-time Leaderboards**: Compete with players worldwide
 - **Modern UI/UX**: Beautiful, responsive design with light/dark themes
 - **Cross-Platform**: Works on desktop, tablet, and mobile devices
