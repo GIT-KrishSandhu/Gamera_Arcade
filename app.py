@@ -10,7 +10,6 @@ import numpy as np
 from games import game_manager
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gamera_arcade.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
