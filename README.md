@@ -2,29 +2,29 @@
 
 A revolutionary web-based gaming platform that combines gesture control with Web3 technology. Built with Flask, OpenCV, MediaPipe, and modern web technologies.
 
-## ✨ Features
+## Features
 
-### 🎯 Core Features
+### Core Features
 - **Gesture-Controlled Games**: Play games using hand movements detected by AI
 - **Web3 Integration**: Earn tokens and NFTs based on gaming performance
 - **Real-time Leaderboards**: Compete with players worldwide
 - **Modern UI/UX**: Beautiful, responsive design with light/dark themes
 - **Cross-Platform**: Works on desktop, tablet, and mobile devices
 
-### 🎮 Games Available
-1. **Fruit Ninja** ✅ - Slice fruits with hand gestures (Active)
-2. **T-Rex Run** 🚧 - Jump over obstacles with hand-up gesture (Coming Soon)
-3. **Rock Paper Scissors** 🚧 - Battle the computer with real gestures (Coming Soon)
-4. **Gesture Breakout** 🚧 - Control the paddle with your hand (Coming Soon)
-5. **Space Invaders** 🚧 - Defend Earth with gesture controls (Coming Soon)
+### Games Available
+1. **Fruit Ninja** - Slice fruits with hand gestures (Active)
+2. **T-Rex Run** - Jump over obstacles with hand-up gesture (Active)
+3. **Rock Paper Scissors** - Battle the computer with real gestures (Active)
+4. **Gesture Breakout** - Control the paddle with your hand (Coming Soon)
+5. **Space Invaders** - Defend Earth with gesture controls (Coming Soon)
 
-### 🎨 Enhanced Design Features
+### Enhanced Design Features
 - **Dynamic Color Schemes**: Green theme for light mode, Blue theme for dark mode
 - **Smooth Animations**: Floating elements, particle effects, and transitions
 - **Visual Feedback**: Score animations, token earning effects, and notifications
 - **Responsive Layout**: Optimized for all screen sizes
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -52,7 +52,7 @@ python app.py
 4. **Open your browser**
 Navigate to `Gamera Arcade`
 
-## 🎯 How to Play
+## How to Play
 
 ### Fruit Ninja
 1. Click "Start Game" to begin
@@ -66,7 +66,7 @@ Navigate to `Gamera Arcade`
 - **Hand Detection**: Keep your hand visible and well-lit
 - **Scoring**: Each sliced fruit gives you 10 points
 
-## 🛠️ Technical Architecture
+## Technical Architecture
 
 ### Backend (Flask)
 - **User Management**: Registration, login, profiles
@@ -90,7 +90,7 @@ Navigate to `Gamera Arcade`
 - **Token System**: Configurable reward economics
 - **NFT Support**: Achievement and collectible framework
 
-## 🎨 Color Schemes
+## Color Schemes
 
 ### Light Mode (Green Theme)
 - Primary: `#8dd783` (Light Green)
@@ -106,7 +106,7 @@ Navigate to `Gamera Arcade`
 - Background: `#1B1212` (Dark Brown)
 - Surface: `#36454F` (Charcoal)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 gamera-arcade/
@@ -128,7 +128,7 @@ gamera-arcade/
 └── games/                # Game engine modules (future)
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 ```bash
@@ -140,36 +140,6 @@ DATABASE_URL=sqlite:///gamera_arcade.db
 - Resolution: 640x480 (recommended)
 - Frame Rate: 30 FPS
 - Format: WebRTC compatible
-
-### Game Settings
-- Fruit spawn interval: 1.5 seconds (decreases with difficulty)
-- Score per fruit: 10 points
-- Token multiplier: Based on score/100
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Camera not working:**
-- Check browser permissions
-- Ensure other apps aren't using the camera
-- Try refreshing the page
-- Use HTTPS in production
-
-**Fruits not appearing:**
-- ✅ **FIXED**: Enhanced fruit spawning system
-- Improved collision detection
-- Better visual feedback
-
-**Theme not switching:**
-- ✅ **FIXED**: Enhanced theme toggle
-- Proper CSS variable updates
-- Smooth transitions between themes
-
-**Performance issues:**
-- Lower camera resolution
-- Close other browser tabs
-- Check system resources
 
 ## 🚀 Future Roadmap
 
@@ -191,12 +161,6 @@ DATABASE_URL=sqlite:///gamera_arcade.db
 - [ ] Advanced gesture recognition
 - [ ] Tournament system
 
-## 👥 Team
-
-- **Lead Developer**: [Your Name] - lead@gamerarcade.com
-- **AI/CV Engineer**: [Name] - ai@gamerarcade.com  
-- **Web3 Specialist**: [Name] - web3@gamerarcade.com
-
 ## 📄 License
 
 This project is licensed under the MIT License.
@@ -213,4 +177,4 @@ This project is licensed under the MIT License.
 
 **Gamera Arcade** - Where Gaming Meets Innovation 🎮✨
 
-*Built with ❤️ using Flask, OpenCV, MediaPipe, and Web3 technologies*
+*Built with ❤️ using Flask, OpenCV & MediaPipe technologies*
