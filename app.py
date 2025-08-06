@@ -10,6 +10,7 @@ import numpy as np
 from games import game_manager
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your-secret-key-here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///gamera_arcade.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -73,7 +74,7 @@ GAMES_CONFIG = {
     },
     'Snake_Game': {
         'name': 'Snake Game',
-        'description': 'Navigate from a small worm to COBRA, eat as many apples as you can and avoid eating yourself!!',
+        'description': 'Eat as many apples as you can!',
         'thumbnail': '/static/images/snake_game.jpg',
         'status': 'coming_soon',
         'engine': 'snake_engine'
