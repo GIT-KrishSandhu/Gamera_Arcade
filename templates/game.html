@@ -31,7 +31,7 @@
       <div class="game-canvas-section">
           <div class="canvas-container">
               {% if game_config.status == 'active' %}
-                  <img id="gameVideo" class="game-video" style="display: none; width: 100%; height: 100%; object-fit: cover;" />
+                  <img id="gameVideo" class="game-video" src="{{ url_for('video_feed') }}" style="width: 100%; height: 100%; object-fit: cover;" />
                   <div class="game-overlay-ui">
                       <div class="score-display">
                           <span class="score-label">Score:</span>

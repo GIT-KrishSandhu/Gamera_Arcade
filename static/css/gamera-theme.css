@@ -1,0 +1,2279 @@
+/* 
+==============================================
+Gamera Arcade - Cyborg Theme Customizations
+==============================================
+*/
+
+/* CSS Variables for Theme Switching - Authentic Cyborg Colors */
+:root {
+  /* Dark Theme (Original Cyborg) - Pink/Purple/Black Gaming Palette */
+  --primary-bg: #1e1e1e;
+  --secondary-bg: #27292a;
+  --accent-color: #ec6090;
+  --accent-secondary: #e75e8d;
+  --text-primary: #fff;
+  --text-secondary: #ccc;
+  --border-color: #3a3a3a;
+  --card-bg: #27292a;
+  --nav-bg: rgba(39, 41, 42, 0.95);
+  --button-bg: #ec6090;
+  --button-hover: #e75e8d;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --gradient-primary: linear-gradient(135deg, #ec6090, #e75e8d);
+  --gradient-secondary: linear-gradient(135deg, #e75e8d, #d63384);
+}
+
+/* Light Theme Variables - White/Purple/Pink Gaming Palette */
+[data-theme="light"] {
+  --primary-bg: #ffffff;
+  --secondary-bg: #f8f9fa;
+  --accent-color: #d63384;
+  --accent-secondary: #e75e8d;
+  --text-primary: #212529;
+  --text-secondary: #6c757d;
+  --border-color: #e9ecef;
+  --card-bg: #ffffff;
+  --nav-bg: rgba(255, 255, 255, 0.95);
+  --button-bg: #d63384;
+  --button-hover: #b02a5b;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --gradient-primary: linear-gradient(135deg, #d63384, #e75e8d);
+  --gradient-secondary: linear-gradient(135deg, #e75e8d, #ec6090);
+}
+
+/* Apply theme variables to cyborg elements - Override template */
+html body {
+  background-color: var(--primary-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+body {
+  background-color: var(--primary-bg) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Header customizations - FIXED */
+.header-area {
+  background-color: var(--nav-bg) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 9999 !important;
+  height: 80px !important;
+}
+
+.background-header {
+  background-color: var(--nav-bg) !important;
+  display: block !important;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.main-nav .nav li a {
+  color: var(--text-primary) !important;
+}
+
+.main-nav .nav li a:hover,
+.main-nav .nav li a.active {
+  color: var(--accent-color) !important;
+}
+
+/* Add padding to body to account for fixed header */
+body {
+  padding-top: 100px !important;
+}
+
+/* Enhanced Navigation Layout */
+.main-nav {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  padding: 0 20px !important;
+}
+
+.main-nav .logo {
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+
+.main-nav .logo img {
+  max-height: 45px !important;
+  width: auto !important;
+  transition: transform 0.3s ease !important;
+}
+
+.main-nav .logo:hover img {
+  transform: scale(1.05) !important;
+}
+
+/* Enhanced Navigation Menu */
+.main-nav .nav {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+  gap: 15px !important;
+}
+
+.main-nav .nav .nav-item {
+  display: flex !important;
+  align-items: center !important;
+}
+
+.main-nav .nav .nav-item.dropdown {
+  position: relative !important;
+}
+
+/* Enhanced Theme Toggle - Inline with Navigation */
+.theme-toggle-cyborg {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-right: 10px;
+}
+
+.theme-switch {
+  display: none;
+}
+
+.theme-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 50px;
+  height: 25px;
+  background: var(--secondary-bg);
+  border-radius: 15px;
+  cursor: pointer;
+  border: 2px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 21px;
+  height: 21px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.theme-switch:checked+.theme-label .toggle-slider {
+  transform: translateX(23px);
+}
+
+.sun-icon,
+.moon-icon {
+  position: absolute;
+  font-size: 10px;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.sun-icon {
+  left: 6px;
+  color: #ffd700;
+  opacity: 0;
+}
+
+.moon-icon {
+  right: 6px;
+  color: #87ceeb;
+  opacity: 1;
+}
+
+.theme-switch:checked+.theme-label .sun-icon {
+  opacity: 1;
+}
+
+.theme-switch:checked+.theme-label .moon-icon {
+  opacity: 0;
+}
+
+/* Enhanced User Info Section - Inline with Navigation */
+.nav-coins {
+  margin-right: 10px;
+}
+
+.nav-coins {
+  display: flex;
+  align-items: center;
+  background: var(--accent-color);
+  padding: 6px 12px;
+  border-radius: 15px;
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.nav-coins i {
+  margin-right: 5px;
+  color: #ffd700;
+}
+
+/* Flash Messages */
+.flash-messages-cyborg {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.flash-message {
+  padding: 15px;
+  margin: 5px 0;
+  border-radius: 5px;
+  position: relative;
+  animation: slideDown 0.3s ease;
+}
+
+.flash-message.flash-success {
+  background: rgba(40, 167, 69, 0.9);
+  color: white;
+  border-left: 4px solid #28a745;
+}
+
+.flash-message.flash-error {
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+  border-left: 4px solid #dc3545;
+}
+
+.flash-close {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Card and content styling for light mode */
+.most-popular .item,
+.gaming-library .item,
+.featured-games .item {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.most-popular .item h4,
+.gaming-library .item h4,
+.featured-games .item h4 {
+  color: var(--text-primary) !important;
+}
+
+.most-popular .item span,
+.gaming-library .item span,
+.featured-games .item span {
+  color: var(--text-secondary) !important;
+}
+
+/* Button styling */
+.main-border-button a,
+.main-button a {
+  background: var(--button-bg) !important;
+  color: white !important;
+  border-color: var(--button-bg) !important;
+}
+
+.main-border-button a:hover,
+.main-button a:hover {
+  background: var(--button-hover) !important;
+  border-color: var(--button-hover) !important;
+}
+
+/* Footer styling */
+footer {
+  background-color: var(--secondary-bg) !important;
+  color: var(--text-primary) !important;
+  border-top: 1px solid var(--border-color);
+}
+
+footer p {
+  color: var(--text-secondary) !important;
+}
+
+footer a {
+  color: var(--accent-color) !important;
+}
+
+/* Modal styling */
+.cyborg-modal .modal-content {
+  background-color: var(--card-bg) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .theme-toggle-cyborg {
+    margin-right: 10px;
+  }
+
+  .user-info-section {
+    margin-right: 10px;
+  }
+
+  .nav-coins {
+    padding: 6px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Gaming specific enhancements - Override cyborg template */
+body .page-content {
+  background-color: var(--primary-bg) !important;
+  min-height: calc(100vh - 200px);
+}
+
+.page-content {
+  background-color: var(--primary-bg) !important;
+  min-height: calc(100vh - 200px);
+}
+
+/* Ensure video elements maintain performance */
+#gameVideo,
+.game-canvas {
+  border: 2px solid var(--accent-color);
+  border-radius: 10px;
+  background: var(--secondary-bg);
+}
+
+/* Leaderboard styling */
+.leaderboard-item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Game card hover effects */
+.item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(236, 96, 144, 0.3);
+  transition: all 0.3s ease;
+}
+
+[data-theme="light"] .item:hover {
+  box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+}
+
+/* Cyborg Preloader Enhancements */
+.js-preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--primary-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.js-preloader.loaded {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader-inner {
+  text-align: center;
+}
+
+.preloader-inner .dot {
+  width: 20px;
+  height: 20px;
+  background: var(--accent-color);
+  border-radius: 50%;
+  display: inline-block;
+  animation: preloader-bounce 1.4s ease-in-out infinite both;
+}
+
+.preloader-inner .dots {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.preloader-inner .dots span {
+  width: 8px;
+  height: 8px;
+  background: var(--accent-secondary);
+  border-radius: 50%;
+  display: inline-block;
+  animation: preloader-dots 1.4s ease-in-out infinite both;
+}
+
+.preloader-inner .dots span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.preloader-inner .dots span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+.preloader-inner .dots span:nth-child(3) {
+  animation-delay: 0s;
+}
+
+@keyframes preloader-bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes preloader-dots {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Enhanced Game Cards with Cyborg Styling */
+.most-popular .item,
+.gaming-library .item {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 23px;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  position: relative;
+}
+
+.most-popular .item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--gradient-primary);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  z-index: -1;
+}
+
+.most-popular .item:hover::before {
+  opacity: 0.1;
+}
+
+.most-popular .item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-color);
+}
+
+[data-theme="light"] .most-popular .item:hover {
+  box-shadow: 0 20px 40px rgba(141, 215, 131, 0.3);
+}
+
+/* Enhanced Navigation */
+.main-nav .nav li a {
+  position: relative;
+  overflow: hidden;
+}
+
+.main-nav .nav li a::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: -100%;
+  width: 100%;
+  height: 2px;
+  background: var(--accent-color);
+  transition: left var(--transition-normal);
+}
+
+.main-nav .nav li a:hover::before,
+.main-nav .nav li a.active::before {
+  left: 0;
+}
+
+/* Gaming Performance Indicators */
+.performance-indicator {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-sm);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  z-index: 1000;
+  opacity: 0.7;
+  transition: opacity var(--transition-normal);
+}
+
+.performance-indicator:hover {
+  opacity: 1;
+}
+
+/* Enhanced Button Styles */
+.main-border-button a,
+.main-button a {
+  background: var(--gradient-primary) !important;
+  border: 2px solid var(--accent-color) !important;
+  color: white !important;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+.main-border-button a::before,
+.main-button a::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-secondary);
+  transition: left var(--transition-normal);
+  z-index: -1;
+}
+
+.main-border-button a:hover::before,
+.main-button a:hover::before {
+  left: 0;
+}
+
+.main-border-button a:hover,
+.main-button a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Fixed Game Grid Layout */
+.most-popular .row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+}
+
+.most-popular .col-lg-3 {
+  flex: 0 0 25%;
+  max-width: 25%;
+  padding: 0 15px;
+  margin-bottom: 30px;
+}
+
+.most-popular .item {
+  background: var(--card-bg);
+  border-radius: 23px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.most-popular .item img {
+  width: 100% !important;
+  height: 150px !important;
+  object-fit: cover !important;
+  border-radius: 23px !important;
+  margin-bottom: 15px;
+}
+
+.most-popular .item h4 {
+  color: var(--text-primary) !important;
+  font-size: 18px !important;
+  margin: 10px 0 !important;
+  flex-grow: 1;
+}
+
+.most-popular .item h4 span {
+  color: var(--text-secondary) !important;
+  font-size: 14px !important;
+}
+
+.most-popular .item ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding: 10px 0;
+}
+
+.most-popular .item ul li {
+  color: var(--accent-color) !important;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.most-popular .item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Leaderboard Colors - FIXED */
+.gaming-library .item ul li .fas.fa-crown {
+  color: #ffd700 !important;
+  /* Gold */
+}
+
+.gaming-library .item ul li .fas.fa-medal {
+  color: #c0c0c0 !important;
+  /* Silver */
+}
+
+.gaming-library .item:nth-child(3) ul li .fas.fa-medal {
+  color: #cd7f32 !important;
+  /* Bronze */
+}
+
+/* Responsive Game Grid */
+@media (max-width: 992px) {
+  .most-popular .col-lg-3 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .most-popular .col-lg-3 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}
+
+/* Banner Enhancements */
+.main-banner {
+  background: var(--gradient-primary);
+  border-radius: 23px;
+  padding: 60px 40px;
+  margin-bottom: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.main-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('/static/images/banner-bg.jpg') no-repeat center center;
+  background-size: cover;
+  opacity: 0.6;
+  border-radius: 23px;
+  z-index: 0;
+}
+
+.header-text {
+  position: relative;
+  z-index: 1;
+}
+
+.header-text h6 {
+  color: var(--text-primary) !important;
+  font-size: 16px;
+  font-weight: 400;
+  margin-bottom: 15px;
+}
+
+.header-text h4 {
+  color: var(--text-primary) !important;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+.header-text h4 em {
+  color: white !important;
+  font-style: normal;
+  text-decoration: underline;
+}
+
+.header-text p {
+  color: var(--text-primary) !important;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Section Spacing Fix */
+section {
+  margin-top: 60px !important;
+}
+
+.most-popular {
+  margin-top: 0 !important;
+}
+
+/*
+ Fix Profile Image Size in Navigation */
+.main-nav .nav li a img {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin-left: 8px !important;
+  vertical-align: middle !important;
+}
+
+/* Fix Navigation Width and Layout */
+.header-area .container {
+  max-width: 100% !important;
+  padding: 0 20px !important;
+}
+
+.main-nav {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+}
+
+.main-nav .logo {
+  flex-shrink: 0 !important;
+  margin-right: 20px !important;
+}
+
+.main-nav .logo img {
+  max-height: 40px !important;
+  width: auto !important;
+}
+
+/* Navigation Menu Proper Spacing */
+.main-nav .nav {
+  display: flex !important;
+  align-items: center !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  justify-content: flex-end !important;
+}
+
+.main-nav .nav li {
+  margin: 0 15px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.main-nav .nav li a {
+  display: flex !important;
+  align-items: center !important;
+  padding: 10px 0 !important;
+  text-decoration: none !important;
+  color: var(--text-primary) !important;
+  font-weight: 500 !important;
+  transition: color 0.3s ease !important;
+}
+
+.main-nav .nav li a:hover {
+  color: var(--accent-color) !important;
+}
+
+/* Fix Theme Toggle and Coins Position */
+.theme-toggle-cyborg,
+.user-info-section {
+  flex-shrink: 0 !important;
+  margin: 0 10px !important;
+}
+
+/* Mobile Menu Trigger */
+.menu-trigger {
+  display: none !important;
+  flex-direction: column !important;
+  cursor: pointer !important;
+  padding: 10px !important;
+}
+
+.menu-trigger span {
+  width: 25px !important;
+  height: 3px !important;
+  background: var(--text-primary) !important;
+  margin: 3px 0 !important;
+  transition: 0.3s !important;
+}
+
+/* Responsive Navigation */
+@media (max-width: 992px) {
+  .main-nav .nav {
+    display: none !important;
+  }
+
+  .menu-trigger {
+    display: flex !important;
+  }
+
+  .theme-toggle-cyborg,
+  .user-info-section {
+    margin: 0 5px !important;
+  }
+
+  .nav-coins {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  .theme-label {
+    width: 40px !important;
+    height: 20px !important;
+  }
+
+  .toggle-slider {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .theme-switch:checked+.theme-label .toggle-slider {
+    transform: translateX(18px) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-area .container {
+    padding: 0 15px !important;
+  }
+
+  .main-nav .logo img {
+    max-height: 35px !important;
+  }
+
+  .nav-coins {
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+  }
+
+  .theme-label {
+    width: 35px !important;
+    height: 18px !important;
+  }
+
+  .toggle-slider {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .theme-switch:checked+.theme-label .toggle-slider {
+    transform: translateX(15px) !important;
+  }
+}
+
+/* Fix Header Sticky Behavior */
+.header-area.header-sticky {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  background: var(--nav-bg) !important;
+  backdrop-filter: blur(10px) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+/* Add padding to body to account for fixed header */
+body {
+  padding-top: 80px !important;
+}
+
+/* Ensure proper spacing for main content */
+.page-content {
+  margin-top: 20px !important;
+}
+
+/* Fix Profile Link Styling */
+.main-nav .nav li a[href*="profile"] {
+  background: var(--accent-color) !important;
+  border-radius: 20px !important;
+  padding: 8px 15px !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
+
+.main-nav .nav li a[href*="profile"]:hover {
+  background: var(--button-hover) !important;
+  color: white !important;
+}
+
+/* Fix Login/Logout Button Styling */
+.main-nav .nav li a[href*="auth"],
+.main-nav .nav li a[href*="logout"] {
+  background: var(--gradient-primary) !important;
+  border-radius: 20px !important;
+  padding: 8px 15px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  border: 2px solid var(--accent-color) !important;
+}
+
+.main-nav .nav li a[href*="auth"]:hover,
+.main-nav .nav li a[href*="logout"]:hover {
+  background: var(--gradient-secondary) !important;
+  color: white !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Fix Game Grid Layout - 2x6 Format */
+.games-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  grid-template-rows: repeat(2, 1fr) !important;
+  gap: 20px !important;
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  padding: 20px !important;
+}
+
+.game-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 15px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  height: 280px !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.game-thumbnail {
+  position: relative !important;
+  height: 160px !important;
+  overflow: hidden !important;
+}
+
+.game-image {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  transition: transform 0.3s ease !important;
+}
+
+.game-card:hover .game-image {
+  transform: scale(1.1) !important;
+}
+
+.game-info {
+  padding: 15px !important;
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+}
+
+.game-title {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  margin-bottom: 8px !important;
+}
+
+.game-description {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+  margin-bottom: 10px !important;
+  line-height: 1.4 !important;
+}
+
+.game-meta {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.status-badge {
+  padding: 4px 8px !important;
+  border-radius: 12px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+}
+
+.status-badge.active {
+  background: var(--success-color) !important;
+  color: white !important;
+}
+
+.status-badge.coming-soon {
+  background: var(--warning-color) !important;
+  color: white !important;
+}
+
+/* Responsive Game Grid */
+@media (max-width: 1200px) {
+  .games-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-rows: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .games-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(6, 1fr) !important;
+    gap: 15px !important;
+  }
+
+  .game-card {
+    height: 250px !important;
+  }
+
+  .game-thumbnail {
+    height: 140px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .games-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(12, 1fr) !important;
+  }
+}
+
+/* Fix Leaderboard Colors - Gold, Silver, Bronze */
+.leaderboard-item.top-1 .rank i.fa-crown {
+  color: #FFD700 !important;
+  /* Gold */
+  font-size: 24px !important;
+}
+
+.leaderboard-item.top-2 .rank i.fa-medal {
+  color: #C0C0C0 !important;
+  /* Silver */
+  font-size: 22px !important;
+}
+
+.leaderboard-item.top-3 .rank i.fa-medal {
+  color: #CD7F32 !important;
+  /* Bronze */
+  font-size: 20px !important;
+}
+
+.leaderboard-item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 10px !important;
+  padding: 15px !important;
+  margin-bottom: 10px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  transition: all 0.3s ease !important;
+}
+
+.leaderboard-item:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.leaderboard-item.top-1 {
+  border-color: #FFD700 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(255, 215, 0, 0.1)) !important;
+}
+
+.leaderboard-item.top-2 {
+  border-color: #C0C0C0 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(192, 192, 192, 0.1)) !important;
+}
+
+.leaderboard-item.top-3 {
+  border-color: #CD7F32 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(205, 127, 50, 0.1)) !important;
+}
+
+.rank {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.rank-number {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: var(--text-primary) !important;
+}
+
+.player-info {
+  flex: 1 !important;
+  margin-left: 15px !important;
+}
+
+.player-name {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+}
+
+.score-tokens {
+  display: flex !important;
+  align-items: center !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: var(--accent-color) !important;
+}
+
+.score-tokens i {
+  margin-right: 5px !important;
+  color: #FFD700 !important;
+}
+
+/* Fix Hero Section Styling */
+.hero {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+  padding: 60px 0 !important;
+  margin-bottom: 40px !important;
+}
+
+.hero-title {
+  font-size: 3rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Fix Section Headers */
+.section-title {
+  color: var(--text-primary) !important;
+  font-size: 2.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 15px !important;
+}
+
+.section-subtitle {
+  color: var(--text-secondary) !important;
+  font-size: 1.2rem !important;
+  margin-bottom: 30px !important;
+}
+
+/* Fix Feature Cards */
+.features-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 30px !important;
+  margin-top: 40px !important;
+}
+
+.feature-card {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 15px !important;
+  padding: 30px !important;
+  text-align: center !important;
+  transition: all 0.3s ease !important;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.feature-icon {
+  font-size: 3rem !important;
+  color: var(--accent-color) !important;
+  margin-bottom: 20px !important;
+}
+
+.feature-title {
+  color: var(--text-primary) !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 15px !important;
+}
+
+.feature-description {
+  color: var(--text-secondary) !important;
+  line-height: 1.6 !important;
+}
+
+/* E
+nhanced Cyborg Gaming Aesthetics */
+
+/* Dark Theme Enhancements */
+:root {
+  /* Gaming-specific colors */
+  --neon-pink: #ec6090;
+  --neon-purple: #e75e8d;
+  --dark-purple: #d63384;
+  --gaming-glow: rgba(236, 96, 144, 0.3);
+}
+
+/* Light Theme Enhancements */
+[data-theme="light"] {
+  /* Light gaming colors */
+  --neon-pink: #d63384;
+  --neon-purple: #e75e8d;
+  --dark-purple: #b02a5b;
+  --gaming-glow: rgba(214, 51, 132, 0.2);
+}
+
+/* Enhanced Button Styling with Cyborg Colors */
+.main-button a,
+.main-border-button a {
+  background: var(--gradient-primary) !important;
+  border: 2px solid var(--accent-color) !important;
+  color: white !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 0 20px var(--gaming-glow) !important;
+}
+
+.main-button a:hover,
+.main-border-button a:hover {
+  background: var(--gradient-secondary) !important;
+  box-shadow: 0 0 30px var(--gaming-glow), 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Enhanced Game Cards with Neon Effects */
+.most-popular .item {
+  border: 1px solid var(--border-color) !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1) !important;
+  transition: all 0.4s ease !important;
+}
+
+.most-popular .item:hover {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 20px 40px var(--gaming-glow), 0 0 30px var(--gaming-glow) !important;
+  transform: translateY(-10px) scale(1.02) !important;
+}
+
+/* Enhanced Navigation with Gaming Glow */
+.main-nav .nav li a:hover,
+.main-nav .nav li a.active {
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 10px var(--gaming-glow) !important;
+}
+
+/* Enhanced Theme Toggle with Neon Effect */
+.theme-label {
+  box-shadow: 0 0 10px var(--gaming-glow) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.toggle-slider {
+  background: var(--gradient-primary) !important;
+  box-shadow: 0 0 15px var(--gaming-glow) !important;
+}
+
+/* Enhanced Coins Display */
+.nav-coins {
+  background: var(--gradient-primary) !important;
+  box-shadow: 0 0 15px var(--gaming-glow) !important;
+  border: 1px solid var(--accent-color) !important;
+}
+
+/* Enhanced Leaderboard with Gaming Effects */
+.gaming-library .item:hover {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 10px 30px var(--gaming-glow) !important;
+}
+
+.leaderboard-item.top-1 {
+  border-color: #FFD700 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(255, 215, 0, 0.1)) !important;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.2) !important;
+}
+
+.leaderboard-item.top-2 {
+  border-color: #C0C0C0 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(192, 192, 192, 0.1)) !important;
+  box-shadow: 0 0 20px rgba(192, 192, 192, 0.2) !important;
+}
+
+.leaderboard-item.top-3 {
+  border-color: #CD7F32 !important;
+  background: linear-gradient(135deg, var(--card-bg), rgba(205, 127, 50, 0.1)) !important;
+  box-shadow: 0 0 20px rgba(205, 127, 50, 0.2) !important;
+}
+
+/* Enhanced Banner with Cyborg Styling */
+.main-banner {
+  background: var(--gradient-primary) !important;
+  box-shadow: 0 0 50px var(--gaming-glow) !important;
+  border: 1px solid var(--accent-color) !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.header-text h4 {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.5) !important;
+}
+
+.header-text h4 em {
+  color: #fff !important;
+  text-shadow: 0 0 15px var(--gaming-glow) !important;
+}
+
+/* Enhanced Feature Cards */
+.feature-card:hover {
+  border-color: var(--accent-color) !important;
+  box-shadow: 0 20px 40px var(--gaming-glow) !important;
+}
+
+.feature-icon {
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 15px var(--gaming-glow) !important;
+}
+
+/* Enhanced Status Badges */
+.status-badge.active {
+  background: var(--gradient-primary) !important;
+  box-shadow: 0 0 10px var(--gaming-glow) !important;
+}
+
+/* Enhanced Flash Messages */
+.flash-message.flash-success {
+  background: linear-gradient(135deg, var(--success-color), rgba(76, 175, 80, 0.8)) !important;
+  border-left-color: var(--accent-color) !important;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.3) !important;
+}
+
+.flash-message.flash-error {
+  background: linear-gradient(135deg, var(--error-color), rgba(244, 67, 54, 0.8)) !important;
+  border-left-color: var(--accent-color) !important;
+  box-shadow: 0 0 15px rgba(244, 67, 54, 0.3) !important;
+}
+
+/* Gaming Performance Enhancements */
+@keyframes cyborgGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 20px var(--gaming-glow);
+  }
+
+  50% {
+    box-shadow: 0 0 30px var(--gaming-glow), 0 0 40px var(--gaming-glow);
+  }
+}
+
+.most-popular .item:hover,
+.gaming-library .item:hover,
+.main-button a:hover {
+  animation: cyborgGlow 2s ease-in-out infinite !important;
+}
+
+/* Light Theme Specific Adjustments */
+[data-theme="light"] .main-banner {
+  background: var(--gradient-primary) !important;
+  color: white !important;
+}
+
+[data-theme="light"] .header-text h4,
+[data-theme="light"] .header-text h6,
+[data-theme="light"] .header-text p {
+  color: white !important;
+}
+
+[data-theme="light"] .most-popular .item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+[data-theme="light"] .gaming-library .item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+/* Enhance
+d Profile Dropdown */
+.nav-item.dropdown {
+  position: relative;
+}
+
+.dropdown-toggle {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: var(--gradient-primary) !important;
+  border: 2px solid var(--accent-color) !important;
+  border-radius: 25px !important;
+  padding: 8px 16px !important;
+  color: white !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  position: relative !important;
+}
+
+.dropdown-toggle:hover {
+  background: var(--gradient-secondary) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px var(--gaming-glow) !important;
+  color: white !important;
+}
+
+.profile-img {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  border: 2px solid white !important;
+}
+
+.profile-name {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Remove dropdown arrow styling since we removed the arrow */
+
+/* Enhanced Dropdown Menu */
+.dropdown-menu {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--accent-color) !important;
+  border-radius: 15px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 20px var(--gaming-glow) !important;
+  padding: 10px 0 !important;
+  margin-top: 10px !important;
+  min-width: 200px !important;
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  display: none !important;
+  list-style: none !important;
+}
+
+.dropdown-menu.show {
+  display: block !important;
+  animation: dropdownSlide 0.3s ease !important;
+}
+
+.dropdown-item {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 12px 20px !important;
+  color: var(--text-primary) !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.dropdown-item:hover {
+  background: var(--accent-color) !important;
+  color: white !important;
+  transform: translateX(5px) !important;
+}
+
+.dropdown-item i {
+  width: 16px !important;
+  text-align: center !important;
+  color: var(--accent-color) !important;
+}
+
+.dropdown-item:hover i {
+  color: white !important;
+}
+
+.dropdown-divider {
+  border-color: var(--border-color) !important;
+  margin: 8px 0 !important;
+}
+
+@keyframes dropdownSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Enhanced Login Button */
+.nav-login-btn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: var(--gradient-primary) !important;
+  border: 2px solid var(--accent-color) !important;
+  border-radius: 25px !important;
+  padding: 10px 20px !important;
+  color: white !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.nav-login-btn:hover {
+  background: var(--gradient-secondary) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px var(--gaming-glow) !important;
+  color: white !important;
+}
+
+.nav-login-btn i {
+  font-size: 14px !important;
+}
+
+/* Enhanced Coins Display with Click Effect */
+.nav-coins {
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+.nav-coins::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.nav-coins:hover::before {
+  left: 100%;
+}
+
+.nav-coins:hover {
+  transform: scale(1.05) !important;
+  box-shadow: 0 5px 15px var(--gaming-glow) !important;
+}
+
+.nav-coins:active {
+  transform: scale(0.95) !important;
+}
+
+/* Enhanced Mobile Navigation */
+@media (max-width: 992px) {
+  .main-nav .nav {
+    display: none !important;
+  }
+
+  .menu-trigger {
+    display: flex !important;
+  }
+
+  .dropdown-toggle {
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+  }
+
+  .profile-img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .profile-name {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-nav {
+    padding: 0 15px !important;
+  }
+
+  .main-nav .nav {
+    gap: 10px !important;
+  }
+
+  .nav-coins {
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+  }
+
+  .theme-label {
+    width: 40px !important;
+    height: 20px !important;
+  }
+
+  .toggle-slider {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .theme-switch:checked+.theme-label .toggle-slider {
+    transform: translateX(18px) !important;
+  }
+}
+
+/* Enhanced Menu Trigger Animation */
+.menu-trigger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.menu-trigger:hover {
+  background: var(--accent-color);
+}
+
+.menu-trigger span {
+  width: 25px;
+  height: 3px;
+  background: var(--text-primary);
+  margin: 3px 0;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.menu-trigger:hover span {
+  background: white;
+}
+
+/* Mobile Menu Overlay (for future implementation) */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 80px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 999;
+  display: none;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 80px;
+  right: -300px;
+  width: 300px;
+  height: calc(100vh - 80px);
+  background: var(--card-bg);
+  border-left: 2px solid var(--accent-color);
+  padding: 20px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+
+.mobile-menu.active {
+  right: 0;
+}
+
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-item:hover {
+  color: var(--accent-color);
+  transform: translateX(10px);
+}
+
+.mobile-menu-item i {
+  width: 20px;
+  text-align: center;
+  color: var(--accent-color);
+}
+
+/* Enhanced Mobile Menu Styling */
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--accent-color);
+  margin-bottom: 20px;
+}
+
+.mobile-menu-header h5 {
+  color: var(--text-primary);
+  font-weight: 700;
+  margin: 0;
+  font-size: 18px;
+}
+
+.mobile-menu-close {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.mobile-menu-close:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: rotate(90deg);
+}
+
+.mobile-menu-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 15px 0;
+}
+
+/* Enhanced Navigation Animations */
+.nav-item.dropdown .dropdown-toggle {
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-item.dropdown .dropdown-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
+}
+
+.nav-item.dropdown .dropdown-toggle:hover::before {
+  left: 100%;
+}
+
+/* Notification Badge for Coins */
+.nav-coins::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 12px;
+  height: 12px;
+  background: var(--success-color);
+  border-radius: 50%;
+  border: 2px solid var(--card-bg);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.nav-coins.has-update::after {
+  opacity: 1;
+  transform: scale(1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced Logo Animation */
+.main-nav .logo {
+  position: relative;
+}
+
+.main-nav .logo::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  transition: width 0.3s ease;
+}
+
+.main-nav .logo:hover::after {
+  width: 100%;
+}
+
+/* Improved Accessibility */
+.dropdown-toggle:focus,
+.nav-login-btn:focus,
+.theme-label:focus-within {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+
+  .dropdown-toggle,
+  .nav-login-btn {
+    border-width: 3px !important;
+  }
+
+  .dropdown-menu {
+    border-width: 3px !important;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+  .dropdown-toggle,
+  .nav-login-btn,
+  .nav-coins,
+  .theme-label,
+  .mobile-menu {
+    transition: none !important;
+  }
+
+  .dropdown-arrow {
+    transition: none !important;
+  }
+
+  @keyframes dropdownSlide {
+
+    from,
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Print styles */
+@media print {
+
+  .header-area,
+  .mobile-menu,
+  .mobile-menu-overlay {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0 !important;
+  }
+}/* 
+=
+=============================================
+Enhanced Footer Design
+==============================================
+*/
+
+/* Main Footer Container */
+.main-footer {
+  background: var(--secondary-bg) !important;
+  color: var(--text-primary) !important;
+  border-top: 2px solid var(--accent-color) !important;
+  margin-top: 60px !important;
+}
+
+/* Footer Content Section */
+.footer-content {
+  padding: 60px 0 40px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.footer-section {
+  margin-bottom: 30px;
+}
+
+/* Footer Logo */
+.footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.footer-logo-img {
+  max-height: 40px;
+  width: auto;
+}
+
+.footer-logo h3 {
+  color: var(--accent-color) !important;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* Footer Description */
+.footer-description {
+  color: var(--text-secondary) !important;
+  line-height: 1.6;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+/* Footer Titles */
+.footer-title {
+  color: var(--text-primary) !important;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.footer-title::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: var(--accent-color);
+}
+
+/* Footer Links */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 10px;
+}
+
+.footer-links a {
+  color: var(--text-secondary) !important;
+  text-decoration: none;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footer-links a:hover {
+  color: var(--accent-color) !important;
+  transform: translateX(5px);
+}
+
+/* Social Links */
+.footer-social {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--accent-color);
+  color: white !important;
+  border-radius: 50%;
+  text-decoration: none;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.social-link:hover {
+  background: var(--button-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px var(--gaming-glow);
+  color: white !important;
+}
+
+/* Contact Section */
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary) !important;
+  font-size: 14px;
+}
+
+.contact-item i {
+  color: var(--accent-color) !important;
+  width: 16px;
+  text-align: center;
+}
+
+/* Team Info Section */
+.footer-team-section {
+  background: var(--primary-bg);
+  padding: 40px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.team-info {
+  text-align: center;
+}
+
+.team-title {
+  color: var(--accent-color) !important;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.team-members {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.team-member,
+.team-tech,
+.team-theme {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  padding: 15px 20px;
+  color: var(--text-primary) !important;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.team-member:hover,
+.team-tech:hover,
+.team-theme:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-member strong,
+.team-tech strong,
+.team-theme strong {
+  color: var(--accent-color) !important;
+}
+
+/* Copyright Section */
+.footer-bottom {
+  background: var(--card-bg);
+  padding: 20px 0;
+}
+
+.copyright-section {
+  text-align: center;
+}
+
+.copyright-section p {
+  color: var(--text-secondary) !important;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.copyright-section a {
+  color: var(--accent-color) !important;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.copyright-section a:hover {
+  color: var(--button-hover) !important;
+}
+
+.tech-credits {
+  font-size: 12px !important;
+  opacity: 0.8;
+}
+
+/* Responsive Footer */
+@media (max-width: 992px) {
+  .footer-content {
+    padding: 40px 0 30px 0;
+  }
+  
+  .team-members {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .team-member,
+  .team-tech,
+  .team-theme {
+    width: 100%;
+    max-width: 300px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-logo {
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .footer-section {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  
+  .footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .footer-social {
+    justify-content: center;
+  }
+  
+  .footer-contact {
+    align-items: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-content {
+    padding: 30px 0 20px 0;
+  }
+  
+  .footer-team-section {
+    padding: 30px 0;
+  }
+  
+  .team-title {
+    font-size: 20px;
+  }
+  
+  .footer-logo h3 {
+    font-size: 20px;
+  }
+  
+  .social-link {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+}
+
+/* Light Theme Adjustments */
+[data-theme="light"] .main-footer {
+  background: var(--secondary-bg) !important;
+  border-top-color: var(--accent-color) !important;
+}
+
+[data-theme="light"] .footer-team-section {
+  background: var(--primary-bg) !important;
+}
+
+[data-theme="light"] .footer-bottom {
+  background: var(--card-bg) !important;
+}
+
+/* Gaming Enhancements */
+.footer-section:hover .footer-title {
+  color: var(--accent-color) !important;
+  text-shadow: 0 0 10px var(--gaming-glow);
+}
+
+.team-member:hover,
+.team-tech:hover,
+.team-theme:hover {
+  box-shadow: 0 5px 15px var(--gaming-glow) !important;
+}
+
+/* Print Styles */
+@media print {
+  .main-footer {
+    background: white !important;
+    color: black !important;
+    border: none !important;
+  }
+  
+  .footer-social,
+  .social-link {
+    display: none !important;
+  }
+}/* Addit
+ional Theme Override for Containers */
+.container {
+  background: transparent !important;
+}
+
+.container-fluid {
+  background: transparent !important;
+}
+
+/* Ensure main content area respects theme */
+.main-content,
+.content-wrapper,
+.page-wrapper {
+  background-color: var(--primary-bg) !important;
+}
+
+/* Override any remaining cyborg template backgrounds */
+body .page-content,
+body.page-content,
+.page-content.container {
+  background-color: var(--primary-bg) !important;
+}
+
+/* Light theme specific overrides */
+[data-theme="light"] body {
+  background-color: var(--primary-bg) !important;
+}
+
+[data-theme="light"] body .page-content {
+  background-color: var(--primary-bg) !important;
+}
+
+[data-theme="light"] .page-content {
+  background-color: var(--primary-bg) !important;
+}

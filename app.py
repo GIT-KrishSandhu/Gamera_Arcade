@@ -7,7 +7,7 @@ import json
 import cv2
 import base64
 import numpy as np
-from games import game_manager
+from games.game_manager import game_manager
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'

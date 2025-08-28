@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Gamera Arcade - Gesture Gaming Revolution{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="static/images/GA_favicon.png">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="{{ url_for('index') }}" class="brand-link">
+                    <i class="fas fa-gamepad brand-icon"></i>
+                    <span class="brand-text">Gamera Arcade</span>
+                </a>
+            </div>
+            
+            <div class="nav-controls">
+                <div class="theme-toggle">
+                    <input type="checkbox" id="theme-switch" class="theme-switch">
+                    <label for="theme-switch" class="theme-label">
+                        <i class="fas fa-sun sun-icon"></i>
+                        <i class="fas fa-moon moon-icon"></i>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                
+                {% if session.user_id %}
+                <div class="nav-coins">
+                    <i class="fas fa-coins"></i>
+                    <span>{{ session.tokens }}</span>
+                </div>
+                {% endif %}
+
+                <div class="profile-dropdown">
+                    {% if session.user_id %}
+                        <button class="profile-btn" onclick="toggleDropdown()">
+                            <i class="fas fa-user-circle"></i>
+                            <span>{{ session.username }}</span>
+                            <i class="fas fa-chevron-down dropdown-arrow"></i>
+                        </button>
+                        <div class="dropdown-menu" id="profileDropdown">
+                            <a href="{{ url_for('profile') }}" class="dropdown-item">
+                                <i class="fas fa-user"></i> Profile
+                            </a>
+                            <a href="#" class="dropdown-item" onclick="connectWallet()">
+                                <i class="fas fa-wallet"></i> Connect Wallet
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{{ url_for('logout') }}" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('auth') }}" class="auth-btn">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="flash-message flash-{{ category }}">
+                        <span>{{ message }}</span>
+                        <button onclick="this.parentElement.remove()" class="flash-close">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3 class="footer-title">Gamera Arcade</h3>
+                <p class="footer-description">
+                    Revolutionary gesture-controlled gaming platform powered by AI and computer vision.
+                </p>
+                <div class="footer-social">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-subtitle">Team Members</h4>
+                <div class="team-member">
+                    <strong>Lead Developer</strong><br>
+                    <strong>Krish Sandhu</strong><br>
+                    <strong>Raamanjal Singh Gangwar</strong><br>
+                    <span class="contact-info">
+                        <i class="fas fa-envelope"></i> lead@gamerarcade.com<br>
+                        <i class="fas fa-phone"></i> +1 (555) 123-4567
+                    </span>
+                </div>
+                <div class="team-member">
+                    <strong>AI/CV Engineer</strong><br>
+                    <span class="contact-info">
+                        <i class="fas fa-envelope"></i> ai@gamerarcade.com<br>
+                        <i class="fas fa-phone"></i> +1 (555) 234-5678
+                    </span>
+                </div>
+                <div class="team-member">
+                    <strong>Web3 Specialist</strong><br>
+                    <span class="contact-info">
+                        <i class="fas fa-envelope"></i> web3@gamerarcade.com<br>
+                        <i class="fas fa-phone"></i> +1 (555) 345-6789
+                    </span>
+                </div>
+            </div>
+            
+            <div class="footer-section">
+                <h4 class="footer-subtitle">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="#games">Games</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="#about">About</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="footer-container">
+                <p>&copy; 2025 Gamera Arcade. All rights reserved.</p>
+                <p class="footer-tech">Powered by OpenCV, MediaPipe & Web3</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="walletModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Connect Wallet</h3>
+                <button class="modal-close" onclick="closeWalletModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Connect your Web3 wallet to earn and manage tokens.</p>
+                <button class="wallet-btn metamask-btn" onclick="connectMetaMask()">
+                    <img src="/static/images/metamask-icon.png" alt="MetaMask" class="wallet-icon">
+                    Connect MetaMask
+                </button>
+                </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,643 @@
+/*
+==============================================
+Gamera Arcade - Critical UI Fixes
+==============================================
+*/
+
+/* CRITICAL FIX: Profile Image Size in Navigation */
+.main-nav .nav li a img {
+  width: 32px !important;
+  height: 32px !important;
+  border-radius: 50% !important;
+  object-fit: cover !important;
+  margin-left: 8px !important;
+  vertical-align: middle !important;
+  display: inline-block !important;
+}
+
+/* CRITICAL FIX: Navigation Width and Layout */
+.header-area .container {
+  max-width: 100% !important;
+  padding: 0 20px !important;
+}
+
+.main-nav {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+}
+
+.main-nav .logo {
+  flex-shrink: 0 !important;
+  margin-right: 20px !important;
+}
+
+.main-nav .nav {
+  display: flex !important;
+  align-items: center !important;
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  justify-content: flex-end !important;
+}
+
+.main-nav .nav li {
+  margin: 0 15px !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* CRITICAL FIX: Game Grid - 2x6 Layout */
+/* .most-popular .row:last-child {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  grid-template-rows: repeat(2, 1fr) !important;
+  gap: 20px !important;
+  margin: 0 !important;
+} */
+
+/* .most-popular .col-lg-3 {
+  grid-column: span 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+} */
+
+.most-popular .row:last-child {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 20px !important;
+  margin: 0 !important;
+}
+.most-popular .col-lg-3 {
+  flex: 1 1 22% !important; /* 4 cards per row, adjust as needed */
+  max-width: 22% !important;
+  margin-bottom: 20px !important;
+}
+
+.most-popular .item {
+  height: 280px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 15px !important;
+  overflow: hidden !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+}
+
+.most-popular .item img {
+  width: 100% !important;
+  height: 160px !important;
+  object-fit: cover !important;
+  border-radius: 15px 15px 0 0 !important;
+}
+
+.most-popular .item h4 {
+  padding: 15px !important;
+  margin: 0 !important;
+  font-size: 16px !important;
+  color: var(--text-primary) !important;
+  flex: 1 !important;
+}
+
+.most-popular .item h4 span {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+  display: block !important;
+  margin-top: 5px !important;
+}
+
+.most-popular .item ul {
+  padding: 0 15px 15px !important;
+  margin: 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+}
+
+.most-popular .item ul li {
+  font-size: 12px !important;
+  color: var(--text-secondary) !important;
+}
+
+/* CRITICAL FIX: Leaderboard Colors - Cyborg Gaming Style */
+.gaming-library .item ul li:first-child i.fa-crown {
+  color: #FFD700 !important; /* Gold */
+  font-size: 40px !important;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5) !important;
+}
+
+.gaming-library .item ul li:first-child i.fa-medal {
+  font-size: 40px !important;
+}
+
+.gaming-library .item:nth-child(1) ul li:first-child i.fa-medal {
+  color: #C0C0C0 !important; /* Silver */
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5) !important;
+}
+
+.gaming-library .item:nth-child(2) ul li:first-child i.fa-medal {
+  color: #CD7F32 !important; /* Bronze */
+  text-shadow: 0 0 10px rgba(205, 127, 50, 0.5) !important;
+}
+
+/* CRITICAL FIX: Theme Toggle and Coins Alignment */
+.theme-toggle-cyborg {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 10px !important;
+  order: 1 !important;
+}
+
+.user-info-section {
+  display: flex !important;
+  align-items: center !important;
+  margin: 0 10px !important;
+  order: 2 !important;
+}
+
+.nav-coins {
+  display: flex !important;
+  align-items: center !important;
+  background: var(--accent-color) !important;
+  padding: 6px 12px !important;
+  border-radius: 15px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+}
+
+.nav-coins i {
+  margin-right: 5px !important;
+  color: #FFD700 !important;
+}
+
+/* CRITICAL FIX: Theme Toggle Size */
+.theme-label {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: 50px !important;
+  height: 25px !important;
+  background: var(--secondary-bg) !important;
+  border-radius: 15px !important;
+  cursor: pointer !important;
+  border: 2px solid var(--border-color) !important;
+  transition: all 0.3s ease !important;
+}
+
+.toggle-slider {
+  position: absolute !important;
+  top: 1px !important;
+  left: 1px !important;
+  width: 21px !important;
+  height: 21px !important;
+  background: var(--accent-color) !important;
+  border-radius: 50% !important;
+  transition: transform 0.3s ease !important;
+}
+
+.theme-switch:checked + .theme-label .toggle-slider {
+  transform: translateX(23px) !important;
+}
+
+/* CRITICAL FIX: Responsive Game Grid */
+@media (max-width: 1200px) {
+  .most-popular .row:last-child {
+    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-rows: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .most-popular .row:last-child {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(6, 1fr) !important;
+    gap: 15px !important;
+  }
+  
+  .most-popular .item {
+    height: 250px !important;
+  }
+  
+  .most-popular .item img {
+    height: 140px !important;
+  }
+  
+  .main-nav .nav {
+    display: none !important;
+  }
+  
+  .menu-trigger {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .most-popular .row:last-child {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: repeat(12, 1fr) !important;
+  }
+}
+
+/* CRITICAL FIX: Header Sticky */
+.header-area.header-sticky {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  background: var(--nav-bg) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+body {
+  padding-top: 80px !important;
+}
+
+/* CRITICAL FIX: Game Hover Effects - Cyborg Pink/Purple */
+.most-popular .item:hover {
+  transform: translateY(-10px) !important;
+  box-shadow: 0 20px 40px rgba(236, 96, 144, 0.4) !important;
+  border-color: var(--accent-color) !important;
+}
+
+[data-theme="light"] .most-popular .item:hover {
+  box-shadow: 0 20px 40px rgba(214, 51, 132, 0.3) !important;
+}
+
+/* CRITICAL FIX: Button Styling */
+.main-button a,
+.main-border-button a {
+  background: var(--gradient-primary) !important;
+  border: 2px solid var(--accent-color) !important;
+  color: white !important;
+  padding: 12px 25px !important;
+  border-radius: 25px !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+}
+
+.main-button a:hover,
+.main-border-button a:hover {
+  background: var(--gradient-secondary) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* CRITICAL FIX: Gaming Library Styling */
+.gaming-library .item {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 15px !important;
+  margin-bottom: 15px !important;
+  transition: all 0.3s ease !important;
+}
+
+.gaming-library .item:hover {
+  transform: translateY(-5px) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
+  border-color: var(--accent-color) !important;
+}
+
+.gaming-library .item ul {
+  display: flex !important;
+  align-items: center !important;
+  padding: 20px !important;
+  margin: 0 !important;
+}
+
+.gaming-library .item ul li {
+  margin-right: 20px !important;
+  color: var(--text-primary) !important;
+}
+
+.gaming-library .item ul li h4 {
+  color: var(--text-primary) !important;
+  margin: 0 !important;
+}
+
+.gaming-library .item ul li span {
+  color: var(--text-secondary) !important;
+}
+
+/* ===================================
+   Authentication Page Styles
+   =================================== */
+
+/* ===================================
+   Authentication Page Styles
+   =================================== */
+
+/* Full Page Container */
+/* Authentication Page Styles */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+}
+
+.auth-container {
+    max-width: 450px;
+    width: 100%;
+    background-color: #1f2122;
+    padding: 40px;
+    border-radius: 23px;
+}
+
+.auth-logo {
+    max-width: 150px;
+    margin-bottom: 20px;
+}
+
+.auth-header .auth-title {
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.auth-header .auth-subtitle {
+    color: #666;
+    font-size: 16px;
+}
+
+.auth-forms {
+    margin-top: 30px;
+}
+
+.form-title {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.form-input {
+    width: 100%;
+    background-color: #27292a;
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 25px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.form-input::placeholder {
+    color: #666;
+}
+
+.auth-btn {
+    width: 100%;
+    background-color: #e75e8d;
+    color: #fff;
+    border-radius: 25px;
+    padding: 12px;
+    border: none;
+    font-weight: 600;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.auth-btn:hover {
+    background-color: #fff;
+    color: #e75e8d;
+}
+
+.form-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.switch-btn {
+    background: none;
+    border: none;
+    color: #e75e8d;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+  .auth-container {
+    grid-template-columns: 1fr; /* Stack columns on mobile */
+  }
+}
+
+/* ===================================
+   Game Page Styles (for existing HTML)
+   =================================== */
+
+/* Main Page Layout */
+.game-page .game-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.game-page .game-title {
+  color: #fff;
+  font-weight: 700;
+  font-size: 32px;
+}
+
+.game-page .game-description {
+  color: #6c757d;
+  max-width: 600px;
+  margin: 10px auto 20px;
+}
+
+.game-page .game-stats {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  background-color: #1f2122;
+  padding: 20px;
+  border-radius: 23px;
+  max-width: 700px;
+  margin: auto;
+}
+
+.game-page .stat-item .stat-label {
+  color: #6c757d;
+  font-size: 14px;
+  margin-right: 8px;
+}
+
+.game-page .stat-item .stat-value {
+  color: #e75e8d;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+/* Two-Column Grid Layout */
+.game-page .game-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* 2/3 for game, 1/3 for leaderboard */
+  gap: 30px;
+  align-items: flex-start;
+}
+
+/* Left Column: Gameplay */
+.game-canvas-section {
+  background-color: #1f2122;
+  border-radius: 23px;
+  padding: 30px;
+}
+
+.canvas-container {
+  background-color: #000;
+  border-radius: 15px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #444;
+  margin-bottom: 20px;
+}
+
+.game-video {
+  width: 100%;
+  display: block;
+}
+
+.game-overlay-ui {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.game-controls-bottom {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.game-btn {
+  background-color: #e75e8d;
+  color: #fff;
+  border-radius: 25px;
+  padding: 12px 25px;
+  border: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s;
+}
+
+.game-btn:hover {
+  background-color: #fff;
+  color: #e75e8d;
+}
+
+.game-btn.secondary {
+  background-color: #27292a;
+}
+
+.game-instructions {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #27292a;
+  color: #aaa;
+}
+
+.game-instructions h3 {
+  color: #fff;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.game-instructions ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.game-instructions li {
+  margin-bottom: 10px;
+}
+
+.game-instructions i {
+  color: #e75e8d;
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+/* Right Column: Leaderboard */
+.leaderboard-section {
+  background-color: #1f2122;
+  border-radius: 23px;
+  padding: 30px;
+}
+
+.leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #444;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.leaderboard-title {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.leaderboard-item {
+  display: flex;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #27292a;
+  color: #fff;
+}
+
+.leaderboard-item:last-child {
+  border-bottom: none;
+}
+
+.rank {
+  font-size: 16px;
+  font-weight: 700;
+  width: 40px;
+  text-align: center;
+  color: #fff;
+}
+.rank .gold { color: #ffc107; }
+.rank .silver { color: #c0c0c0; }
+.rank .bronze { color: #cd7f32; }
+
+.player-info {
+  flex-grow: 1;
+  margin-left: 15px;
+}
+
+.player-score {
+  font-weight: 700;
+  color: #e75e8d;
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .game-content {
+    grid-template-columns: 1fr; /* Stack columns on smaller screens */
+  }
+}

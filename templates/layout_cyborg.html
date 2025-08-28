@@ -21,11 +21,10 @@
     
     <!-- Custom Gamera Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamera-theme.css') }}">
-    
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/GA_favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamera-fixes.css') }}">
     
-    {% block head %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/GA_favicon.png') }}">
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/gamera-fixes.css') }}">
 </head>
 
 <body>
@@ -109,6 +108,11 @@
                                         <i class="fas fa-sign-in-alt"></i> Login
                                     </a>
                                 </li>
+                            {% endif %}
+                        </ul>
+                                <li><a href="{{ url_for('auth') }}" class="nav-login-btn" {% if request.endpoint == 'auth' %}class="active"{% endif %}>
+                                    <i class="fas fa-sign-in-alt"></i> Login
+                                </a></li>
                             {% endif %}
                         </ul>   
                         <a class='menu-trigger'>

@@ -1,150 +1,98 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<section class="hero">
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                Welcome to <span class="gradient-text">Gamera Arcade</span>
-            </h1>
-            <p class="hero-subtitle">
-                Experience the future of gaming with gesture-controlled adventures powered by AI and computer vision.
-            </p>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">5</span>
-                    <span class="stat-label">Epic Games</span>
+<!-- ***** Banner Start ***** -->
+<div class="main-banner">
+    <div class="row">
+        <div class="col-lg-7">
+            <div class="header-text">
+                <h6>Welcome To Gamera Arcade</h6>
+                <h4>Gesture-Controlled Gaming Revolution</h4>
+                <p>Experience the future of gaming with AI-powered hand gesture controls. Play, compete, and earn tokens!</p>
+                {% if not session.user_id %}
+                <div class="main-button">
+                    <a href="{{ url_for('auth') }}">Start Gaming</a>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">∞</span>
-                    <span class="stat-label">Possibilities</span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-number">Web3</span>
-                    <span class="stat-label">Rewards</span>
-                </div>
-            </div>
-            {% if not session.user_id %}
-                <div class="hero-cta">
-                    <a href="{{ url_for('auth') }}" class="cta-btn primary">
-                        <i class="fas fa-rocket"></i>
-                        Start Gaming
-                    </a>
-                </div>
-            {% endif %}
-        </div>
-        <div class="hero-visual">
-            <div class="floating-elements">
-                <div class="floating-icon" style="--delay: 0s;">🎮</div>
-                <div class="floating-icon" style="--delay: 1s;">🤚</div>
-                <div class="floating-icon" style="--delay: 2s;">🎯</div>
-                <div class="floating-icon" style="--delay: 3s;">🏆</div>
+                {% endif %}
             </div>
         </div>
     </div>
-</section>
+</div>
+<!-- ***** Banner End ***** -->
 
-<section class="games-section" id="games">
-    <div class="section-container">
-        <div class="section-header">
-            <h2 class="section-title">Featured Games</h2>
-            <p class="section-subtitle">
-                Master these gesture-controlled challenges and earn tokens!
-            </p>
-        </div>
-        
-        <div class="games-grid">
-            {% for game_id, game in games.items() %}
-                <div class="game-card {{ 'coming-soon' if game.status == 'coming_soon' else '' }}" 
-                     onclick="{% if game.status == 'active' %}window.location.href='{{ url_for('game', game_id=game_id) }}'{% endif %}">
-                    <div class="game-thumbnail">
-                        <img src="{{ game.thumbnail }}" alt="{{ game.name }}" class="game-image">
-                        {% if game.status == 'coming_soon' %}
-                            <div class="coming-soon-overlay">
-                                <span class="coming-soon-text">Coming Soon</span>
-                            </div>
-                        {% endif %}
-                        <div class="game-overlay">
-                            <div class="play-button">
-                                <i class="fas fa-play"></i>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="game-info">
-                        <h3 class="game-title">{{ game.name }}</h3>
-                        <p class="game-description">{{ game.description }}</p>
-                        
-                        <div class="game-meta">
-                            <div class="game-status">
-                                {% if game.status == 'active' %}
-                                    <span class="status-badge active">
-                                        <i class="fas fa-circle"></i> Live
-                                    </span>
-                                {% else %}
-                                    <span class="status-badge coming-soon">
-                                        <i class="fas fa-clock"></i> Soon
-                                    </span>
-                                {% endif %}
-                            </div>
-                            
+<!-- ***** Most Popular Start ***** -->
+<div class="most-popular">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="heading-section">
+                <h4><em>Featured</em> Games</h4>
+            </div>
+            <div class="row">
+                {% for game_id, game in games.items() %}
+                <div class="col-lg-3 col-sm-6">
+                    <div class="item" onclick="{% if game.status == 'active' %}window.location.href='{{ url_for('game', game_id=game_id) }}'{% endif %}">
+                        <img src="{{ game.thumbnail }}" alt="{{ game.name }}" style="border-radius: 23px; width: 100%; height: 200px; object-fit: cover;">
+                        <h4>{{ game.name }}<br><span>{{ game.description[:20] }}...</span></h4>
+                        <ul>
+                            <li><i class="fa fa-star"></i> 4.8</li>
                             {% if game.status == 'active' %}
-                                <div class="game-difficulty">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="far fa-star"></i>
-                                    <i class="far fa-star"></i>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-
-<section class="leaderboard-section" id="leaderboard">
-    <div class="section-container">
-        <div class="section-header">
-            <h2 class="section-title">Coin Leaderboard</h2>
-            <p class="section-subtitle">Top players with the most coins</p>
-        </div>
-
-        <div class="leaderboard-list">
-            {% if users %}
-                {% for user in users %}
-                    <div class="leaderboard-item {% if loop.index <= 3 %}top-{{ loop.index }}{% endif %}">
-                        <div class="rank">
-                            {% if loop.index == 1 %}
-                                <i class="fas fa-crown gold"></i>
-                            {% elif loop.index == 2 %}
-                                <i class="fas fa-medal silver"></i>
-                            {% elif loop.index == 3 %}
-                                <i class="fas fa-medal bronze"></i>
+                                <li><i class="fa fa-gamepad"></i> Play Now</li>
                             {% else %}
-                                <span class="rank-number">{{ loop.index }}</span>
+                                <li><i class="fa fa-clock"></i> Coming Soon</li>
                             {% endif %}
-                        </div>
-                        <div class="player-info">
-                            <span class="player-name">{{ user.username }}</span>
-                        </div>
-                        <div class="score-tokens">
-                            <i class="fas fa-coins"></i>
-                            {{ user.tokens }}
-                        </div>
+                        </ul>
                     </div>
-                {% endfor %}
-            {% else %}
-                <div class="empty-leaderboard">
-                    <i class="fas fa-trophy"></i>
-                    <p>No users yet. Be the first to register!</p>
                 </div>
-            {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-</section>
+</div>
+<!-- ***** Most Popular End ***** -->
+
+<!-- ***** Gaming Library Start ***** -->
+<div class="gaming-library" id="leaderboard">
+    <div class="col-lg-12">
+        <div class="heading-section">
+            <h4><em>Top Players</em> Leaderboard</h4>
+        </div>
+        {% if users %}
+            {% for user in users %}
+            <div class="item {% if loop.last %}last-item{% endif %}">
+                <ul>
+                    <li>
+                        {% if loop.index == 1 %}
+                            <i class="fas fa-crown" style="color: #ffd700; font-size: 40px; margin-left:20px"></i>
+                        {% elif loop.index == 2 %}
+                            <i class="fas fa-medal" style="color: #c0c0c0; font-size: 40px; margin-left:20px"></i>
+                        {% elif loop.index == 3 %}
+                            <i class="fas fa-medal" style="color: #cd7f32; font-size: 40px; margin-left:20px"></i>
+                        {% else %}
+                            <span style="font-size: 24px; font-weight: bold; color: var(--accent-color);">#{{ loop.index }}</span>
+                        {% endif %}
+                    </li>
+                    <li><h4>{{ user.username }}</h4><span>Gamer</span></li>
+                    <li><h4>Rank</h4><span>#{{ loop.index }}</span></li>
+                    <li><h4>Coins Earned</h4><span>{{ user.tokens }}</span></li>
+                    <li><h4>Status</h4><span>Active</span></li>
+                </ul>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="item">
+                <ul>
+                    <li><i class="fas fa-trophy" style="color: var(--accent-color); font-size: 40px;"></i></li>
+                    <li><h4>No Players Yet</h4><span>Be the first!</span></li>
+                    <li><h4>Join Now</h4><span>Start Playing</span></li>
+                    <li><h4>Earn Coins</h4><span>Win Games</span></li>
+                    <li><h4>Status</h4><span>Waiting</span></li>
+                    <li><div class="main-border-button"><a href="{{ url_for('auth') }}">Register</a></div></li>
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+<!-- ***** Gaming Library End ***** -->
 
 <section class="features-section">
     <div class="section-container">
@@ -196,37 +144,7 @@
     </div>
 </section>
 
-<section class="web3-section">
-    <div class="section-container">
-        <div class="web3-content">
-            <div class="web3-info">
-                <h2 class="section-title">Web3 Gaming Revolution</h2>
-                <p class="section-subtitle">
-                    Connect your wallet and start earning real rewards for your gaming skills.
-                </p>
-                <ul class="web3-features">
-                    <li><i class="fas fa-check"></i> Earn tokens for high scores</li>
-                    <li><i class="fas fa-check"></i> Collect unique NFT achievements</li>
-                    <li><i class="fas fa-check"></i> Trade rewards on decentralized markets</li>
-                    <li><i class="fas fa-check"></i> Participate in community governance</li>
-                </ul>
-                {% if session.user_id %}
-                    <button class="cta-btn secondary" onclick="connectWallet()">
-                        <i class="fas fa-wallet"></i>
-                        Connect Wallet
-                    </button>
-                {% endif %}
-            </div>
-            <div class="web3-visual">
-                <div class="token-animation">
-                    <div class="token-coin">🪙</div>
-                    <div class="token-coin">🎖️</div>
-                    <div class="token-coin">💎</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+
 {% endblock %}
 
 {% block scripts %}
